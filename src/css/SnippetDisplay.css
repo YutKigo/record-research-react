@@ -1,0 +1,114 @@
+/* モーダルの中身 
+--------------------------------------------------- */
+/* スニペットのコードテキストの設定 */
+.snippet-container {
+    margin-bottom: 50px;
+}
+.snippet-text {
+    background-color: hsl(0, 0%, 19%);
+    color: white;
+    padding: 1rem 1rem 1rem 1rem;
+    border-radius: 5px;
+    position: relative;
+    text-align: left;
+    margin: auto;
+
+}
+.snippet-copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.snippet-copy-button:active {
+    transform: scale(0.8);
+}
+
+/* スニペットの説明のスタイル */
+.snippet-description {
+  display: flex;
+  align-items: flex-start; /* ← この行でアイコンが小さくなるのを防ぐ */
+  background-color: hsl(0, 0%, 97%);
+  color: black;
+  padding: 1rem;
+  border: black solid 1px;
+  border-radius: 5px;
+  text-align: left;
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.snippet-description-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  flex-shrink: 0; /* この行でアイコンが小さくなるのを防ぐ */
+}
+
+/* スニペットの注意のスタイル */
+.snippet-attention {
+  display: flex;
+  align-items: flex-start; /* ← この行でアイコンが小さくなるのを防ぐ */
+  background-color: hsl(30, 17%, 98%);
+  color: black;
+  padding: 1rem;
+  border: black dashed 1px;
+  border-radius: 5px;
+  text-align: left;
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.snippet-attention-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  flex-shrink: 0; /* この行でアイコンが小さくなるのを防ぐ */
+}
+
+
+/* --- details開閉アニメーション ここから --- */
+
+/* summary（「詳細」テキスト）のスタイル調整 */
+.snippet-detail-summary {
+    list-style: none; /* デフォルトの黒三角を消す */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+/* summaryの黒三角を消す（一部のブラウザ向け） */
+.snippet-detail-summary::-webkit-details-marker {
+    display: none;
+}
+
+/* summaryの前に矢印アイコンを追加 */
+.snippet-detail-summary::before {
+    content: '▶';
+    margin-right: 0.5rem;
+    font-size: 0.8em;
+    transition: transform 0.2s ease-in-out; /* 回転アニメーションの設定 */
+}
+
+/* detailsが開いている時の矢印のスタイル */
+.snippet-detail-opener[open] > .snippet-detail-summary::before {
+    transform: rotate(90deg); /* 矢印を90度回転させる */
+}
+
+
+/* アニメーションの本体：コンテンツを囲むラッパーのスタイル */
+.snippet-detail-content {
+    display: grid;
+    grid-template-rows: 0fr; /* 初期状態では高さを0にする */
+    opacity: 0; /* 透明にする */
+    overflow: hidden; /* はみ出した部分を隠す */
+     transition: grid-template-rows 0.5s ease-out, opacity 0.4s ease-out 0.1s;
+}
+
+
+/* detailsが開いている時のコンテンツのスタイル */
+.snippet-detail-opener[open] > .snippet-detail-content {
+    grid-template-rows: 1fr; /* 高さをコンテンツに合わせて広げる */
+    opacity: 1; /* 不透明にする */
+}
+
+/* --- details開閉アニメーション ここまで --- */

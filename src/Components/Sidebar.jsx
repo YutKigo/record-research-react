@@ -1,5 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import '../css/App.css'
+import '../css/Sidebar.css';
 
 // Firebase使用のimport
 import { db } from '../firebase';
@@ -7,7 +9,6 @@ import { collection, onSnapshot, addDoc, orderBy, query, where } from 'firebase/
 
 // react-iconsのimport
 import { BiSolidBookAdd } from "react-icons/bi"; // ノート新規作成ボタン
-
 
 function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
 

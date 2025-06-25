@@ -1,0 +1,69 @@
+/* サイドバーのノートボタン設定
+------------------------------------------------------------ */
+
+.side-bar {
+  width: 25%;
+  background-color: rgb(235, 235, 235);
+  box-sizing: border-box;
+  /*border-radius: 10px;*/
+  padding: 10px;
+  margin-right: 10px;
+}
+
+/* タグによるノート検索の設定 */
+.search-note-input {
+  margin-bottom: 2rem;
+  padding: 0.4rem;
+  background-color: #f6f1f1;
+  border: #c1c1c1 solid 1px;
+}
+.search-note-input::-webkit-search-cancel-button {   
+   height: 16px;   /* キャンセルボタンのサイズ */
+   width: 16px;    /*  キャンセルボタンのサイズ */
+   cursor:pointer;
+}
+
+/* 各ノートボタンの設定 */
+.button-note {
+    width: 95%;
+    background: #ffffff;
+    border-radius: 50px;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0.4rem auto;
+    max-width: 260px;
+    padding: 10px 25px;
+    color: #313131;
+    font-weight: 500;
+}
+.button-note:after {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    border-radius: 1px;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+.button-note:hover {
+    background: #313131;
+    color: #FFF;
+}
+.button-note.selected {/* ノート選択中のスタイル */
+  background-color: #313131;
+  color: white;
+  border-color: black;
+  font-weight: bold;
+}
+/* サイドバーのノート作成ボタン設定 */
+.create-note-icon {
+  width: 30px;
+  height: 30px;
+  margin-top: 30px;
+}
+.create-note-icon:hover {
+  color: rgb(0, 110, 48);
+}
+
+

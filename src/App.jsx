@@ -9,7 +9,6 @@ import { collection, onSnapshot, addDoc, orderBy, query } from 'firebase/firesto
 import NoteContent from './Components/NoteContent';
 import Sidebar from './Components/Sidebar';
 
-
 function App() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);

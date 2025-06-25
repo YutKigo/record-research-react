@@ -1,6 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import '../css/App.css';
+import '../css/NoteContent.css'
+
+import Modal from 'react-modal';
 
 // Firebase使用のimport
 import { db } from '../firebase';
@@ -8,18 +11,20 @@ import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addD
 
 // Componentsのimport
 import TagDisplay from './TagDisplay';
+import SnippetDisplay from './SnippetDisplay';
 
 // react-iconsのimport
 import { RiDeleteBin6Line } from "react-icons/ri"; // ノート削除ボタン
 import { VscCopy } from "react-icons/vsc"; // コピーボタン
 import { MdOutlineDescription } from "react-icons/md"; // 説明アイコン
 import { GrAlert } from "react-icons/gr"; // 注意アイコン
-import { FaCaretRight } from "react-icons/fa"; // 注意内のリストアイコン
 import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
 import { IoIosAddCircle } from "react-icons/io"; // 手順追加ボタン
 import { IoMdTrash } from "react-icons/io"; // ノート削除ボタン
 import { BsArrowsCollapse } from "react-icons/bs"; // 手順の全収束アイコン
 import { BsArrowsExpand } from "react-icons/bs"; // 手順の全展開アイコン
+import { RiCloseLargeLine } from "react-icons/ri"; // モーダル閉じるアイコン
+import { DiCodeBadge } from "react-icons/di"; // スニペット集モーダルを開くアイコン
 
 
 function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
@@ -27,6 +32,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
     const [procedures, setProcedures] = useState([]); // 選択されたノートに含まれる手順を管理するstate
     const [tagsArray, setTagsArray] = useState([]); // ノートに含まれるすべてのタグ管理するstate
     const [allOpen, setAllOpen] = useState(false); // 手順のdetailsのopen状況を管理し, 全展開/全収束を制御 
+    const [isModal, setIsModal] = useState(false); // スニペット集モーダル表示を管理
     
     useEffect(() => {
         // ノートが選択されていない場合はクリア
@@ -158,6 +164,19 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         {selectedNote ? (
             <div>
                 <h1>{selectedNote.noteName} </h1>
+
+                <div>
+                    <DiCodeBadge className='modal-open-button' title='スニペット一覧を開く' onClick={() => {
+                        setIsModal(true);
+                    }}/>
+
+                    <Modal className='modal-container' isOpen={isModal} >
+                        <div className='modal-content'>
+                            <SnippetDisplay selectedNote={selectedNote} />
+                        </div>
+                        <RiCloseLargeLine className='modal-close-button' onClick={() => setIsModal(false)} />
+                    </Modal>                    
+                </div>
 
                 <div className='note-tags-container'>
                     {tagsArray.map((tag) => (
