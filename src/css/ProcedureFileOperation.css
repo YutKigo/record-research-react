@@ -1,0 +1,17 @@
+/* 2つの<pre>要素がスペースを均等に分け合い、"中のテキストを左揃え" にする */
+.filetree-container > pre {
+    flex: 1;
+    padding: 1rem;
+    width: 50%;
+    border-radius: 10px;
+    text-align: left; /* ← text-align をこちらに移動！ */
+    background-color: rgb(56, 56, 56);
+    color: white;
+}
+
+.filetree {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+
+/**/

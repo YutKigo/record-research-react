@@ -1,0 +1,3 @@
+.tag-container {
+    flex-wrap: wrap; /* 要素がコンテナを超えた場合に折り返しを許可 */    
+}

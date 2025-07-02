@@ -25,6 +25,8 @@ import { BsArrowsCollapse } from "react-icons/bs"; // 手順の全収束アイ�
 import { BsArrowsExpand } from "react-icons/bs"; // 手順の全展開アイコン
 import { RiCloseLargeLine } from "react-icons/ri"; // モーダル閉じるアイコン
 import { DiCodeBadge } from "react-icons/di"; // スニペット集モーダルを開くアイコン
+import ProcedureCodeEdit from './ProcedureCodeEdit';
+import ProcedureFileOperation from './ProcedureFileOperation';
 
 
 function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
@@ -116,30 +118,6 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         });
     }
 
-    // 手順内のスニペットを更新する関数
-    async function updateProcedureSnippet(selectedNote, procedure, newSnippet) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await updateDoc(docRef, {
-            codeSnippet: newSnippet
-        });
-    }
-
-    // 手順内の説明を更新する関数
-    async function updateProcedureDescription(selectedNote, procedure, newDescription) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await updateDoc(docRef, {
-            description: newDescription
-        });
-    }
-
-    // 手順内の注意を更新する関数
-    async function updateProcedureAttention(selectedNote, procedure, newAttetion) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await updateDoc(docRef, {
-            attention: newAttetion
-        })
-    }
-
     // 新しい手順を作成する関数
     async function createProcedure(procedureName, selectedNote) {
         await addDoc(collection(db, "note", selectedNote.id, "procedure"), {
@@ -211,7 +189,10 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                         <details key={procedure.id} className="procedure-detail-opener">
                             <summary className='procedure-name-div'>
                                 
-                                <h2>{i+1}. <p className='procedure-name' id={procedure.id}>{procedure.procedureName}</p> </h2>
+                                <h2>
+                                    {i+1}. 
+                                    <p className='procedure-name' id={procedure.id}>{procedure.procedureName}</p> 
+                                </h2>
 
                                 <IoMdTrash title='手順の削除' className="delete-procedure-icon" onClick={() => {
                                     const confirmDelete = window.confirm(`手順「${procedure.procedureName}」を削除しますか？`);
@@ -237,75 +218,19 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                     <TagDisplay noteId={selectedNote.id} procedureId={procedure.id} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                                 </div>
 
-                                <div className="procedure-snippet">
-                                    <pre><code id={procedure.id} className='snippet-text'>{procedure.codeSnippet}</code></pre>
-
-                                    <p className='fsPath-text'>
-                                        {procedure.fsPath}
-                                    </p>
-                                    
-                                    <VscCopy title='コピー' className='copy-button' onClick={() => {
-                                        const snippetText = document.getElementById(`${procedure.id}`);
-                                        if (!navigator.clipboard) {
-                                            alert("このブラウザはコピー対応していません...");
-                                            return;
-                                        }
-                                        navigator.clipboard.writeText(snippetText.textContent).then(
-                                            () => {
-                                            alert('クリップボードにコピーしました');
-                                            },
-                                            () => {
-                                            alert('コピーに失敗しました');
-                                        });
-                                    }}/>
-
-                                    <FiEdit3 title='編集' className='snippet-edit-button' onClick={() => {
-                                        const modified = prompt("内容を編集しますか?:", `${procedure.codeSnippet}`);
-                                        if (modified) {
-                                            // フロントの内容を変更
-                                            document.querySelector('.snippet-text').textContent = modified;
-                                            // Firebase上でも内容を変更
-                                            updateProcedureSnippet(selectedNote, procedure, modified);
-                                        } else {
-                                            alert("編集をキャンセルしました.");
-                                        }
-                                    }}/>
-
-                                </div>
+                                { // 手順種別によって表示するコンポーネントを分岐
+                                    procedure.procedureType === "コード編集" ? (<ProcedureCodeEdit selectedNote={selectedNote} procedure={procedure} />) : 
+                                    procedure.procedureType === "ファイル操作" ? (<ProcedureFileOperation procedure={procedure}/>) : 
+                                    procedure.procedureType === "コマンド実行" ? (<></>) : 
+                                    null
+                                }
 
                                 <div className='procedure-description'>
                                     <MdOutlineDescription title='説明' className='description-icon'/>
-                                    <div className='procedure-description-text'>{procedure.description}</div>
-                                    <FiEdit3 title='編集' className='edit-button' onClick={() => {
-                                        const modified = prompt("内容を編集しますか?:", `${procedure.description}`);
-                                        if (modified) {
-                                            // フロントの内容を変更
-                                            document.querySelector('.procedure-description-text').textContent = modified;
-                                            // Firebase上でも内容を変更
-                                            updateProcedureDescription(selectedNote, procedure, modified);
-                                        } else {
-                                            alert("編集をキャンセルしました.");
-                                        }
-                                    }}/>
+                                    <div className='procedure-description-text'>{procedure.procedureDescription}</div>
+                                    <FiEdit3 title='編集' className='edit-button' onClick={() => {}}/>
                                 </div>
 
-                                <div className='procedure-attention'>
-                                    <GrAlert title='注意' className='notification-icon'/>
-                                    <div className='procedure-attention-text'>
-                                        {procedure.attention}
-                                    </div>
-                                    <FiEdit3 title='編集' className='edit-button' onClick={() => {
-                                        const modified = prompt("内容を編集しますか?:", `${procedure.attention}`);
-                                        if (modified) {
-                                            // フロントの内容を変更
-                                            document.querySelector('.procedure-attention-text').textContent = modified;
-                                            // Firebase上でも内容を変更
-                                            updateProcedureAttention(selectedNote, procedure, modified);
-                                        } else {
-                                            alert("編集をキャンセルしました.");
-                                        }
-                                    }}/>
-                                </div>
                             </div>
 
                         </details>

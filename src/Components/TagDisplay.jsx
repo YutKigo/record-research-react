@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import '../css/TagDisplay.css'
+
 import { db } from '../firebase';
 import { collection, onSnapshot, query, addDoc, orderBy, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
