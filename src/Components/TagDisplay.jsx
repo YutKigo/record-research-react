@@ -12,6 +12,14 @@ import { BsTags } from "react-icons/bs"; // タグ表示開始アイコン
 function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm }) {
     const [tags, setTags] = useState([]);
 
+    // ページトップにスムーズにスクロールする関数
+    const scrollToTop = () => {
+        window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+        });
+    };
+
     useEffect(() => {
         if (!noteId || !procedureId) return;
 
@@ -66,6 +74,9 @@ function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm }) {
                     <span key={tag.id} className="procedure-tag">
                         <a onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</a>
                         <u className='procedure-tag-name' onClick={() => {
+                            // トップへスクロール
+                            scrollToTop();
+
                             // サイドバーのタグ検索boxに選択されたタグを挿入し, タグ検索を実行
                             const searchInput = document.querySelector('.search-note-input');
                             searchInput.value = tag.tagName;

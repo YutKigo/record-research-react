@@ -28,6 +28,13 @@
 }
 
 /* NoteContentの手順ごとのスタイル */
+.procedure-type-icon {
+    background-color: #555;
+    color: white;
+    border-radius: 10rem;
+    padding: 0.6rem;
+}
+
 .procedure-item {
   border-bottom: #e3dfdf solid 1px;
   margin: 1rem;
@@ -256,7 +263,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 10000;
 }
 /* モーダルの中身のスタイル */
 .modal-container {

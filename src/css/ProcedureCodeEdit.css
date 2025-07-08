@@ -1,48 +1,157 @@
-/* 手順スニペットスタイル */
+
+/* 切り替えトグルのスタイル 
+--------------------------------------------------------------------------------------- */ 
+.view-toggle-switch {
+    position: relative;
+    display: flex;
+    width: 100%;
+    
+    margin-bottom: 1.5rem;
+    background-color: #929294; 
+    border-radius: 8px;
+    border: 1px solid #929294;
+    overflow: hidden;
+}
+
+/* スライドする背景 (Glider) */
+.glider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background-color: #1d1d1f; /* アクティブな部分の背景色 */
+    border-radius: 8px;
+    transition: transform 0.25s ease-in-out; /* スライドアニメーション */
+    z-index: 1;
+}
+
+/* 'slide' クラスが付与されたら右に100%移動 */
+.glider.slide {
+    transform: translateX(100%);
+}
+
+/* トグルの各選択肢 */
+.toggle-option {
+    flex: 1; /* 親要素内で均等に幅を分割 */
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    color: #7c7b7b;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    transition: color 0.25s ease-in-out;
+    z-index: 2; /* Gliderより手前に表示 */
+}
+
+/* アクティブな選択肢の文字色 */
+.toggle-option.active {
+    color: #ffffff;
+}
+/* 切り替えトグルのスタイルここまで
+--------------------------------------------------------------------------------------- */ 
+
+/* 差分表示
+--------------------------------------------------------------------------------------- */ 
+/* コード編集記録のスタイル */
 .codeEdit-container {
-  background-color: hsl(0, 0%, 19%);
   color: white;
-  padding: 1rem 1rem 1rem 1rem;
+  font-size: 17px;
   border-radius: 5px;
   position: relative;
   text-align: left;
   margin-bottom: 10px;
+  border: rgb(248,248,248) solid 1px;
+  background-color: rgb(248, 248, 248);
 }
+/* コード編集記録の「code」 */
 .codeEdit-code {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    border-radius: 5px;
+    padding: 2.5rem 0rem 2.5rem 2rem  !important;
+    margin: 1.5rem 0 0 0 !important;
 }
-.copy-button {
-  position: absolute;
-  top: 10px;
-  right: 40px;
+.codeEdit-code-added {
+    border: rgb(145, 235, 12) solid 1.5px;   
 }
-.copy-button:active  {
-  transform: scale(0.8);
+.codeEdit-code-deleted {
+    border: rgb(245, 63, 63) solid 1.5px;
 }
-.fsPath-text {
-  /* 親要素(.procedure-snippet)を基準に絶対配置する */
-  position: absolute;
 
+/* 関数名表示 */ 
+.fsPath-symbol {
+  position: absolute;
   white-space: pre-wrap;
-  
-  /* 親要素の下からの距離 */
-  bottom: 0.5rem;
 
-  /* 親要素の右からの距離 */
-  right: 1rem;
+  top: 1.7rem;
+  left: 0.5rem;
   
   /* 見た目を調整するためのオプション（お好みで変更してください） */
   font-size: 0.8em;
   color: #b0b0b0;
   margin: 0; /* pタグのデフォルトマージンをリセット */
 }
+.class-icon {
+  color: orange;
+}
+.method-icon {
+  color: rgb(219, 5, 219);
+}
+
+/* ファイルパス表示 */
+.fsPath-filepath {
+  position: absolute;
+  white-space: pre-wrap;
+  
+  top: 0.2rem;
+  left: 0rem;
+  
+  /* 見た目を調整するためのオプション（お好みで変更してください） */
+  font-size: 0.8em;
+  color: #000000;
+  margin: 0; /* pタグのデフォルトマージンをリセット */
+}
+
+/* コピーボタン表示 */
+.copy-button {
+  position: absolute;
+  top: 1.85rem !important;
+  right: 40px;
+}
+.copy-button:active  {
+  transform: scale(0.8);
+}
 
 /* スニペット用の編集ボタン */
 .codeEdit-code-edit {
   position: absolute;
-  top: 10px;
+  top: 1.85rem !important;
   right: 10px;
 }
 .codeEdit-code-edit:active {
   transform: scale(0.8);
 }
+/* 差分表示ここまで
+--------------------------------------------------------------------------------------- */ 
+
+/* 全体表示
+--------------------------------------------------------------------------------------- */ 
+.fullcode-container {
+  color: white;
+  font-size: 17px;
+  border-radius: 5px;
+  position: relative;
+  text-align: left;
+  margin-bottom: 10px;
+  border: rgb(248,248,248) solid 1px;
+  background-color: rgb(248, 248, 248);
+}
+.fullcode-code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  border-radius: 5px;
+  padding: 2.5rem 0rem 2.5rem 0rem;
+}
+/* 全体表示ここまで
+--------------------------------------------------------------------------------------- */ 

@@ -9,19 +9,51 @@ import { collection, onSnapshot, addDoc, orderBy, query } from 'firebase/firesto
 import NoteContent from './Components/NoteContent';
 import Sidebar from './Components/Sidebar';
 
+// react-iconsのimport
+import { GoMoveToTop } from "react-icons/go";
+
 function App() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // 検索するときの文字を状態として管理 : NoteContentとSidebarにそれぞれ渡す（NoteContentではそのままTagsDisplayに渡す）
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // --- ▼ここから追記▼ ---
+  // スクロールボタンの表示・非表示を管理するstate
+  const [isVisible, setIsVisible] = useState(false);
+
+  // スクロール位置をチェックしてボタンの表示を切り替える関数
+  const toggleVisibility = () => {
+    if (window.scrollY > 300) { // 300px以上スクロールしたら表示
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // ページトップにスムーズにスクロールする関数
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   useEffect(() => {
-    // Firestoreから"note"コレクションデータを取得し, 作成降順で状態変数に格納
+    // スクロールイベントリスナーを追加
+    window.addEventListener('scroll', toggleVisibility);
+
+    // コンポーネントがアンマウントされるときにイベントリスナーを削除
+    return () => {
+      window.removeEventListener('scroll', toggleVisibility);
+    };
+  }, []);
+  // --- ▲ここまで追記▲ ---
+
+  useEffect(() => {
     const unsub = onSnapshot(query(collection(db, "note"), orderBy("createdAt", "desc")), (snapshot) => {
       setNotes(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     });
-    setSelectedNote(null); // 初期状態では選択されたノートはなし
-
-    // Cleanup subscription on unmount
+    setSelectedNote(null);
     return () => unsub();
   }, []);
 
@@ -32,12 +64,17 @@ function App() {
       </div>
 
       <div className="main">
-
         <Sidebar notes={notes} setNotes={setNotes} selectedNote={selectedNote} setSelectedNote={setSelectedNote} searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-        
         <NoteContent selectedNote={selectedNote} setSelectedNote={setSelectedNote} searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-
       </div>
+      
+      {/* isVisibleがtrueの場合のみボタンを表示 */}
+      {isVisible && (
+        // onClickをdivに移動し、円全体をクリック可能にする
+        <div onClick={scrollToTop} className='scrollTopButton' title="ページのトップへ"> 
+          <GoMoveToTop />
+        </div>
+      )}
     </div>
   );
 }

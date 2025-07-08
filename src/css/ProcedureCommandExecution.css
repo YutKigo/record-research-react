@@ -1,0 +1,48 @@
+/* 手順スニペットスタイル */
+.commandExecution-container {
+  background-color: hsl(0, 0%, 19%);
+  color: white;
+  padding: 1rem 1rem 1rem 1rem;
+  border-radius: 5px;
+  position: relative;
+  text-align: left;
+  margin-bottom: 10px;
+}
+.commandExecution-command {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.copy-button {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+}
+.copy-button:active  {
+  transform: scale(0.8);
+}
+.fsPath-text {
+  /* 親要素(.procedure-snippet)を基準に絶対配置する */
+  position: absolute;
+
+  white-space: pre-wrap;
+  
+  /* 親要素の下からの距離 */
+  bottom: 0.5rem;
+
+  /* 親要素の右からの距離 */
+  right: 1rem;
+  
+  /* 見た目を調整するためのオプション（お好みで変更してください） */
+  font-size: 0.8em;
+  color: #b0b0b0;
+  margin: 0; /* pタグのデフォルトマージンをリセット */
+}
+
+/* スニペット用の編集ボタン */
+.codeEdit-code-edit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.codeEdit-code-edit:active {
+  transform: scale(0.8);
+}
