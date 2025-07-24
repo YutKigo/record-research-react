@@ -84,7 +84,7 @@ function SnippetDisplay({ selectedNote }) {
 
         fetchSnippets();
 
-    }, [selectedNote]); // selectedNoteが変更されるたびにこのeffectを再実行
+    }, [selectedNote, loading, error]); // selectedNoteが変更されるたびにこのeffectを再実行
 
     return (
         <div>
