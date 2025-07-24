@@ -86,8 +86,8 @@
 import { useState, useEffect } from 'react';
 import './css/App.css';
 import './css/GlobalMode.css';
-import { db, auth } from './firebase';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { auth } from './firebase';
+//import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { signOut, updateProfile } from 'firebase/auth';
 import { useAuth } from './context/AuthContext';
 
@@ -104,7 +104,7 @@ import { MdLogout } from "react-icons/md";
 import { FaCircleUser } from "react-icons/fa6"; // ユーザーアイコン用のimport
 import { AiOutlineGlobal } from "react-icons/ai"; // グローバルモードへ切り替えるボタン
 import { FaUserShield } from "react-icons/fa6";
-import { LuUserRoundCheck } from "react-icons/lu"; // ログイン中のユーザ表示用
+//import { LuUserRoundCheck } from "react-icons/lu"; // ログイン中のユーザ表示用
 
 
 // ログイン後に表示するアプリ本体
