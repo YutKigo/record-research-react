@@ -128,3 +128,34 @@
   margin-bottom: 16px !important; /* 他のpタグのスタイルを上書き */
   box-sizing: border-box;
 }
+
+/* Login.css に追加 */
+.password-reset-link {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.password-reset-link div {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.password-reset-link div:hover {
+  text-decoration: underline;
+}
+
+.info-message {
+  color: var(--vscode-errorForeground, #f44747);
+  background-color: rgba(71, 244, 137, 0.1);
+  border: 1px solid rgba(71, 244, 74, 0.3);
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 0;
+  margin-bottom: 16px !important; /* 他のpタグのスタイルを上書き */
+  box-sizing: border-box;
+}
