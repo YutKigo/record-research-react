@@ -76,7 +76,7 @@ function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm, isGlobal }
 
                         {/* --- タグ表示 : 閲覧モードにより表示方法を区別 --- */}
                         {!isGlobal ? (<>
-                            <div onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</div>
+                            <a href='' onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</a>
                             <u className='procedure-tag-name' onClick={() => {
                                 // トップへスクロール
                                 scrollToTop();
