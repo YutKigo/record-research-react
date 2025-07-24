@@ -1,9 +1,9 @@
-import React from 'react';
+//import React from 'react';
 import '../css/ProcedureCommandExecution.css'
 
 // react-iconsのimport
 import { VscCopy } from "react-icons/vsc"; // コピーボタン
-import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
+//import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
 
 function ProcedureCommandExecution({ procedure }) {
     

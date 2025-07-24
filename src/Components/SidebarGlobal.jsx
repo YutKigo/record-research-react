@@ -1,12 +1,12 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
+//import React from 'react'
+import {  useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../css/Sidebar.css';
 import '../css/GlobalMode.css';
 
 // Firebase使用のimport
 import { db } from '../firebase';
-import { collection, onSnapshot, addDoc, orderBy, query, where } from 'firebase/firestore'
+import { collection, onSnapshot,  orderBy, query, where } from 'firebase/firestore'
 
 // react-iconsのimport
 import { AiOutlineGlobal } from "react-icons/ai"; // グローバルモードへ切り替えるボタン
@@ -32,7 +32,7 @@ function SidebarGlobal({ notes, setNotes, selectedNote, setSelectedNote, searchT
     setSelectedNote(null);
 
     return () => unsub();
-    }, [currentUser, isGlobal]);
+    }, [currentUser, isGlobal, setNotes, setSelectedNote]);
 
     useEffect(() => {
         let q;
@@ -65,7 +65,7 @@ function SidebarGlobal({ notes, setNotes, selectedNote, setSelectedNote, searchT
         });
 
         return () => unsub();
-    }, [searchTerm]); // ★ searchTermが変わるたびにuseEffectが再実行される
+    }, [searchTerm, currentUser.uid, setNotes]); // ★ searchTermが変わるたびにuseEffectが再実行される
 
     return (
         <div className="side-bar sidebar-global">

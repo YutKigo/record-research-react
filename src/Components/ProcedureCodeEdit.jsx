@@ -7,7 +7,7 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 // react-iconsのimport
 import { VscCopy } from "react-icons/vsc"; // コピーボタン
-import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
+//import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
 import { FaFileAlt } from "react-icons/fa"; // ファイル表示アイコン
 import { VscSymbolClass } from "react-icons/vsc"; // クラス表示アイコン
 import { VscSymbolMethod } from "react-icons/vsc"; // 関数表示アイコン

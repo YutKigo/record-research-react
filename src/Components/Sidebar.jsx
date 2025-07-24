@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../css/Sidebar.css';
 
@@ -33,7 +33,7 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
 
       return () => unsub();
 
-    }, [currentUser, isGlobal]); // currentUserが変わった時だけ実行
+    }, [currentUser, isGlobal, setNotes, setSelectedNote]); // currentUserが変わった時だけ実行
 
     useEffect(() => {
         let q;
@@ -64,7 +64,7 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
         });
 
         return () => unsub();
-    }, [searchTerm]); // ★ searchTermが変わるたびにuseEffectが再実行される
+    }, [searchTerm, currentUser.uid ,setNotes]); // ★ searchTermが変わるたびにuseEffectが再実行される
 
     // 新しいノートを作成する関数（サイドバーの「+」ボタンをクリックしたときに呼び出される）
     async function createNote(noteName) {

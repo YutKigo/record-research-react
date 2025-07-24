@@ -5,7 +5,7 @@ import '../css/SnippetDisplay.css'
 
 // Firebase使用のimport
 import { db } from '../firebase';
-import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addDoc, getDocs, snapshotEqual } from 'firebase/firestore';
+import { collection, doc, orderBy, query, updateDoc, getDocs } from 'firebase/firestore';
 
 // react-iconからのimport
 import { VscCopy } from "react-icons/vsc"; // コピーボタン
@@ -74,8 +74,10 @@ function SnippetDisplay({ selectedNote }) {
 
             } catch (err) {
                 console.error("Error fetching snippets: ", err);
+                console.log(error);
                 setError("スニペットの取得に失敗しました。");
             } finally {
+                console.log(loading);
                 setLoading(false); // ローディング終了
             }
         };

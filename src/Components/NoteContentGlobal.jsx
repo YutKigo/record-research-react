@@ -8,11 +8,11 @@ import Modal from 'react-modal';
 
 // Firebase使用のimport
 import { db } from '../firebase';
-import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addDoc, getDoc, snapshotEqual } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
 // react-syntax-highlighter と好みのテーマをimport
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; // VS Codeのダークテーマに似たスタイル
+//import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+//import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; // VS Codeのダークテーマに似たスタイル
 
 // Componentsのimport
 import TagDisplay from './TagDisplay';
@@ -22,11 +22,11 @@ import ProcedureFileOperation from './ProcedureFileOperation';
 import ProceudureCommandExecution from './ProcedureCommandExecution';
 
 // react-iconsのimport
-import { RiDeleteBin6Line } from "react-icons/ri"; // ノート削除ボタン
+//import { RiDeleteBin6Line } from "react-icons/ri"; // ノート削除ボタン
 import { MdOutlineDescription } from "react-icons/md"; // 説明アイコン
-import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
-import { IoIosAddCircle } from "react-icons/io"; // 手順追加ボタン
-import { IoMdTrash } from "react-icons/io"; // ノート削除ボタン
+//import { FiEdit3 } from "react-icons/fi"; // 編集ボタン
+//import { IoIosAddCircle } from "react-icons/io"; // 手順追加ボタン
+//import { IoMdTrash } from "react-icons/io"; // ノート削除ボタン
 import { BsArrowsCollapse } from "react-icons/bs"; // 手順の全収束アイコン
 import { BsArrowsExpand } from "react-icons/bs"; // 手順の全展開アイコン
 import { RiCloseLargeLine } from "react-icons/ri"; // モーダル閉じるアイコン
@@ -34,11 +34,11 @@ import { DiCodeBadge } from "react-icons/di"; // スニペット集モーダル�
 import { RxInfoCircled } from "react-icons/rx"; // ノート情報を開くアイコン
 
 //import { DiCodeBadge } from "react-icons/di"; // コード編集表示アイコン
-import { MdOutlineDriveFileMove } from "react-icons/md"; // ファイル操作表示アイコン
-import { GoTerminal } from "react-icons/go";
+//import { MdOutlineDriveFileMove } from "react-icons/md"; // ファイル操作表示アイコン
+//import { GoTerminal } from "react-icons/go";
 
 
-function NoteContentGlobal({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
+function NoteContentGlobal({ selectedNote, searchTerm, setSearchTerm }) {
 
     const [procedures, setProcedures] = useState([]); // 選択されたノートに含まれる手順を管理するstate
     const [tagsArray, setTagsArray] = useState([]); // ノートに含まれるすべてのタグ管理するstate

@@ -7,12 +7,12 @@ import Modal from 'react-modal';
 
 // Firebase使用のimport
 import { db } from '../firebase';
-import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addDoc, getDoc, snapshotEqual } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addDoc } from 'firebase/firestore';
 
 
 // react-syntax-highlighter と好みのテーマをimport
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; // VS Codeのダークテーマに似たスタイル
+//import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+//import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; // VS Codeのダークテーマに似たスタイル
 
 // Componentsのimport
 import TagDisplay from './TagDisplay';
@@ -34,8 +34,8 @@ import { DiCodeBadge } from "react-icons/di"; // スニペット集モーダル�
 import { RxInfoCircled } from "react-icons/rx"; // ノート情報を開くアイコン
 
 //import { DiCodeBadge } from "react-icons/di"; // コード編集表示アイコン
-import { MdOutlineDriveFileMove } from "react-icons/md"; // ファイル操作表示アイコン
-import { GoTerminal } from "react-icons/go";
+//import { MdOutlineDriveFileMove } from "react-icons/md"; // ファイル操作表示アイコン
+//import { GoTerminal } from "react-icons/go";
 
 
 function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
@@ -344,11 +344,12 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                 {/* --- ノートの削除 --- */}
                 <RiDeleteBin6Line title='ノート削除' className="delete-note-icon" onClick={() => {
                     const confirmDelete = window.confirm(`ノート「${selectedNote.noteName}」を削除しますか？`);
+                    let confirmDeleteAgain;
                     if (!confirmDelete) return;
                     if (selectedNote.isPublic) {
-                        const confirmDeleteAgain = window.confirm("このノートは公開設定になっています。このノートを削除すると公開されているノートも削除されます。");
+                        confirmDeleteAgain = window.confirm("このノートは公開設定になっています。このノートを削除すると公開されているノートも削除されます。");
                     }
-                    if(!confirmDelete) return;
+                    if(!confirmDeleteAgain) return;
                     deleteNote(selectedNote);
                 }}/>
 
