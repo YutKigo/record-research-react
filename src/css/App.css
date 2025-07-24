@@ -24,6 +24,7 @@
   align-items: center;  
   margin: 5px 0; /* 上下のマージンを追加 */
   position: relative;
+  z-index: 2;
 }
 
 .main {
@@ -65,4 +66,139 @@
 .scrollTopButton svg {
   color: white; /* アイコンの色 */
   font-size: 28px; /* アイコンのサイズ */
+}
+
+
+/* ユーザボタンのスタイル */
+.user-menu-container {
+  position: relative; /* ドロップダウンメニューの位置の基準 */
+}
+
+.user-icon-button {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  color: var(--vscode-foreground);
+  font-size: x-large;
+  z-index: 1001;
+}
+
+.user-icon-button:hover {
+  color: rgb(163, 93, 1)
+}
+.user-icon-button:active {
+  transform: scale(0.8);
+}
+.user-icon-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* ボタンのすぐ下に表示 */
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  width: 200px;
+  min-width: max-content;
+  z-index: 1001;
+  animation: fadeIn 0.1s ease-out;
+  text-align: left;
+}
+
+.dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  color: var(--vscode-foreground);
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+.dropdown-menu button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mode-toggle-container {
+  position: absolute;
+  display: flex;
+  top: 9px;
+  right: 55px;
+}
+
+.mode-toggle-button {
+  background-color: white;
+  border: none;
+}
+.mode-toggle-button:active {
+  transform: scale(0.8);
+}
+.mode-toggle-icon {
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* アカウント表示 */
+/* App.css または GlobalMode.css などに追加 */
+
+/* ヘッダーのユーザーアイコンボタンに表示するアバター */
+.user-icon-button .user-avatar {
+  width: 32px;      /* ボタンのサイズに合わせる */
+  height: 32px;
+  border-radius: 50%; /* 画像を円形にする */
+  object-fit: cover;  /* 画像のアスペクト比を保ちつつ、要素にフィットさせる */
+}
+
+/* ドロップダウンメニュー内のユーザー情報部分 */
+.dropdown-menu .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 画像とテキストの間隔 */
+  padding: 8px 12px;
+}
+
+/* ドロップダウンメニュー内のアバター画像 */
+.dropdown-menu .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ドロップダウンメニュー内のデフォルトアイコンのサイズ調整 */
+.dropdown-menu .user-avatar-icon {
+  font-size: 40px;
+  color: #555;
 }

@@ -9,7 +9,7 @@ import { MdAdd } from "react-icons/md"; // タグ追加ボタン
 import { BsTags } from "react-icons/bs"; // タグ表示開始アイコン
 
 
-function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm }) {
+function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm, isGlobal }) {
     const [tags, setTags] = useState([]);
 
     // ページトップにスムーズにスクロールする関数
@@ -69,25 +69,34 @@ function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm }) {
         <div className='tag-container'>
             <BsTags className='tag-icon'/>
 
+            {/* --- 手順に付与されたタグ表示 --- */}
             {tags.map(tag => (
                 <div id={tag.id}>
                     <span key={tag.id} className="procedure-tag">
-                        <a onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</a>
-                        <u className='procedure-tag-name' onClick={() => {
-                            // トップへスクロール
-                            scrollToTop();
 
-                            // サイドバーのタグ検索boxに選択されたタグを挿入し, タグ検索を実行
-                            const searchInput = document.querySelector('.search-note-input');
-                            searchInput.value = tag.tagName;
-                            setSearchTerm(tag.tagName);
-                        }} >{tag.tagName}</u>
+                        {/* --- タグ表示 : 閲覧モードにより表示方法を区別 --- */}
+                        {!isGlobal ? (<>
+                            <a onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</a>
+                            <u className='procedure-tag-name' onClick={() => {
+                                // トップへスクロール
+                                scrollToTop();
+
+                                // サイドバーのタグ検索boxに選択されたタグを挿入し, タグ検索を実行
+                                const searchInput = document.querySelector('.search-note-input');
+                                searchInput.value = tag.tagName;
+                                setSearchTerm(tag.tagName);
+                            }} >{tag.tagName}</u>
+                        </>) : (<>
+                            #<u className='procedure-tag-name'>{tag.tagName}</u>
+                        </>)}
+                        
                     </span>
                 </div>
                 
             ))}
-
-            <MdAdd className='create-tag' onClick={() => {
+            
+            {/* --- タグ追加ボタン : 閲覧モードにより表示を区別 ---  */}
+            {!isGlobal ? (<MdAdd className='create-tag' onClick={() => {
                 // 新しいノートの名前をpromptで取得し, createNote関数を呼び出す
                 const newTagName = prompt("新しいタグの名前を入力してください（英数のみ）");
                 if (newTagName) {
@@ -95,7 +104,9 @@ function TagDisplay({ noteId, procedureId, searchTerm, setSearchTerm }) {
                 } else {
                     alert("タグ作成を中断しました");
                 }                    
-            }}/>
+            }}/>) : (
+                <></>
+            )}
         </div>
     );
 }

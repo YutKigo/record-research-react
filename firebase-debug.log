@@ -1,0 +1,46 @@
+[debug] [2025-07-24T08:43:53.284Z] ----------------------------------------------------------------------
+[debug] [2025-07-24T08:43:53.286Z] Command:       /opt/homebrew/Cellar/node/23.7.0/bin/node /opt/homebrew/bin/firebase init
+[debug] [2025-07-24T08:43:53.287Z] CLI Version:   14.11.1
+[debug] [2025-07-24T08:43:53.287Z] Platform:      darwin
+[debug] [2025-07-24T08:43:53.287Z] Node Version:  v23.7.0
+[debug] [2025-07-24T08:43:53.287Z] Time:          Thu Jul 24 2025 17:43:53 GMT+0900 (日本標準時)
+[debug] [2025-07-24T08:43:53.287Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-24T08:43:53.292Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-24T08:43:53.292Z] > authorizing via signed-in user (ykigoshi2@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/kigoshiyuuta/development/project_dev/record-research-reactapp
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-07-24T08:44:03.377Z] Checked if tokens are valid: true, expires at: 1753350140362
+[debug] [2025-07-24T08:44:03.377Z] Checked if tokens are valid: true, expires at: 1753350140362
+[debug] [2025-07-24T08:44:03.378Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-07-24T08:44:03.988Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-07-24T08:44:03.988Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project vscode-sample-extension (vscode-sample-extension) 
+[info] 
+=== Hosting Setup
+[debug] [2025-07-24T08:44:06.013Z] Checked if tokens are valid: true, expires at: 1753350140362
+[debug] [2025-07-24T08:44:06.014Z] Checked if tokens are valid: true, expires at: 1753350140362
+[debug] [2025-07-24T08:44:06.014Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/vscode-sample-extension [none]
+[debug] [2025-07-24T08:44:06.320Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/vscode-sample-extension 200
+[debug] [2025-07-24T08:44:06.320Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/vscode-sample-extension {"projectId":"vscode-sample-extension","projectNumber":"871163097885","displayName":"vscode-sample-extension","name":"projects/vscode-sample-extension","resources":{"hostingSite":"vscode-sample-extension"},"state":"ACTIVE","etag":"1_c6bdd048-7f60-4049-aeda-4d66f3548248"}
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 

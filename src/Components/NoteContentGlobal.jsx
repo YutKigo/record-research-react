@@ -2,13 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import '../css/App.css';
 import '../css/NoteContent.css'
+import '../css/GlobalMode.css'
 
 import Modal from 'react-modal';
 
 // Firebase使用のimport
 import { db } from '../firebase';
 import { collection, onSnapshot, deleteDoc, doc, orderBy, query, updateDoc, addDoc, getDoc, snapshotEqual } from 'firebase/firestore';
-
 
 // react-syntax-highlighter と好みのテーマをimport
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -38,7 +38,7 @@ import { MdOutlineDriveFileMove } from "react-icons/md"; // ファイル操作�
 import { GoTerminal } from "react-icons/go";
 
 
-function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
+function NoteContentGlobal({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
 
     const [procedures, setProcedures] = useState([]); // 選択されたノートに含まれる手順を管理するstate
     const [tagsArray, setTagsArray] = useState([]); // ノートに含まれるすべてのタグ管理するstate
@@ -111,93 +111,8 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         };
     }, [selectedNote]);//useEffect
 
-
-    // ノートを削除する関数
-    async function deleteNote(selectedNote) {
-        const docRef = doc(db, "note", selectedNote.id);
-        await deleteDoc(docRef);
-        setProcedures([]); // ノート削除後は手続きもクリア
-        setSelectedNote(null); // 選択されたノートもクリア
-    }
-
-    // 手順名を更新する関数
-    async function updateProcedureName(selectedNote, procedure, newName) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await updateDoc(docRef, {
-            procedureName : newName,
-            updatedAt: new Date().toISOString()
-        });
-    }
-
-    // 手順内の説明を更新する関数
-    async function updateProcedureDescription(selectedNote, procedure, newDescription) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await updateDoc(docRef, {
-            procedureDescription: newDescription,
-            updatedAt: new Date().toISOString()
-        })
-    }
-
-    // 手順を削除する関数
-    async function deleteProcedure(selectedNote, procedure) {
-        const docRef = doc(db, "note", selectedNote.id, "procedure", procedure.id);
-        await deleteDoc(docRef);
-    }
-
-    // 新しい手順を作成する関数
-    async function createProcedure(procedureName, procedureType, selectedNote) {
-        // ノートが選択されていない場合は処理を中断
-        if (!selectedNote) {
-            alert("ノートが選択されていません。");
-            return;
-        }
-
-        // 'procedure'サブコレクションへの参照を取得
-        const procedureCollectionRef = collection(db, "note", selectedNote.id, "procedure");
-
-        // Firestoreに保存する新しい手順のデータオブジェクト
-        const newProcedureData = {
-            procedureName: procedureName,
-            procedureType: procedureType,
-            procedureDescription: "", // 説明は空で初期化
-            code: "",               // コードも空で初期化
-            command: "",            // コマンドも空で初期化
-            filePath: "",           // ファイルパスも空で初期化
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        };
-
-        try {
-            // サブコレクションに新しいドキュメントを追加
-            await addDoc(procedureCollectionRef, newProcedureData);
-            // onSnapshotが自動でUIを更新するため、ここでの状態更新は不要です
-        } catch (error) {
-            console.error("手順の作成中にエラーが発生しました: ", error);
-            alert("手順の作成に失敗しました。");
-        }
-    }
-
-    // ノートの公開/非公開を更新する関数
-    async function updateNotePublicState(note, isPublic) {
-        if (!note) return;
-        const docRef = doc(db, "note", note.id);
-        try {
-            await updateDoc(docRef, {
-                isPublic: isPublic,
-                updatedAt: new Date().toISOString()
-            });
-            // onSnapshotが親コンポーネントで設定されていれば、
-            // この更新は自動的にUIに反映されます。
-            setSelectedNote({ ...note, isPublic: isPublic });
-        } catch (error) {
-            console.error("公開状態の更新中にエラーが発生しました:", error);
-            alert("公開状態の更新に失敗しました。");
-        }
-    }
-
-
     return (
-        <div className="content">
+        <div className="content content-global">
         {selectedNote ? (
             <div>
                 <div className='note-name-container'><h1 className={`note-name-${selectedNote.isPublic}`}>{selectedNote.noteName} </h1></div>
@@ -247,29 +162,11 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                     {i+1}.　
                                     <p className='procedure-name' id={procedure.id}>{procedure.procedureName}</p> 
                                 </h2>
-
-                                <IoMdTrash title='手順の削除' className="delete-procedure-icon" onClick={() => {
-                                    const confirmDelete = window.confirm(`手順「${procedure.procedureName}」を削除しますか？`);
-                                    if (!confirmDelete) return;
-                                    deleteProcedure(selectedNote, procedure);
-                                }}/>
-
-                                <FiEdit3 title="手順名の編集" className='procedure-edit-icon' onClick={() => {
-                                    const modified = prompt("手順名称を編集しますか?:", `${procedure.procedureName}`);
-                                    if (modified) {
-                                        // フロントの内容を変更
-                                        document.getElementById(`${procedure.id}`).textContent = modified;
-                                        // Firebase上でも内容を変更
-                                        updateProcedureName(selectedNote, procedure, modified);
-                                    } else {
-                                        alert("編集をキャンセルしました.");
-                                    }
-                                }}/>
                             </summary>
               
                             <div className='procedure-content-wrapper'>
                                 <div>
-                                    <TagDisplay noteId={selectedNote.id} procedureId={procedure.id} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                                    <TagDisplay noteId={selectedNote.id} procedureId={procedure.id} searchTerm={searchTerm} setSearchTerm={setSearchTerm} isGlobal={true} />
                                 </div>
 
                                 { // 手順種別によって表示するコンポーネントを分岐
@@ -282,17 +179,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                 <div className='procedure-description'>
                                     <MdOutlineDescription title='説明' className='description-icon'/>
                                     <div className='procedure-description-text'>{procedure.procedureDescription}</div>
-                                    <FiEdit3 title='編集' className='edit-button' onClick={() => {
-                                        const modified = prompt("手順内の説明を編集しますか?:", `${procedure.procedureDescription}`);
-                                        if (modified) {
-                                            // フロントの内容を変更
-                                            document.querySelector('.procedure-description-text').textContent = modified.textContent;
-                                            // Firebase上でも内容を変更
-                                            updateProcedureDescription(selectedNote, procedure, modified);
-                                        } else {
-                                            alert("編集をキャンセルしました.");
-                                        }
-                                    }}/>
+            
                                 </div>
 
                             </div>
@@ -301,56 +188,9 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                     </div>
                 ))}
 
-                {/* --- 新手順の作成 --- */}
-                <IoIosAddCircle title='手順の新規作成' className="create-procedure-icon" onClick={() => {
-                    // 1. 新しい手順の名前をpromptで取得
-                    const procedureName = prompt("新しい手順の名前を入力してください:");
-                    
-                    if (!procedureName) {
-                        alert("手順作成を中断しました");
-                        return;
-                    }
+                
 
-                    // 2. 手順のタイプを選択させる
-                    const typeChoice = prompt(
-                        "手順のタイプを選択してください:\n" +
-                        "1: コード編集\n" +
-                        "2: ファイル操作\n" +
-                        "3: コマンド実行"
-                    );
-
-                    let procedureType = "";
-                    switch (typeChoice) {
-                        case "1":
-                            procedureType = "コード編集";
-                            break;
-                        case "2":
-                            procedureType = "ファイル操作";
-                            break;
-                        case "3":
-                            procedureType = "コマンド実行";
-                            break;
-                        default:
-                            alert("無効な選択です。手順作成を中断しました。");
-                            return; // 不正な入力の場合は処理を中断
-                    }
-
-                    // 3. createProcedure関数を呼び出す
-                    createProcedure(procedureName, procedureType, selectedNote);
-
-                }}/>           
-
-
-                {/* --- ノートの削除 --- */}
-                <RiDeleteBin6Line title='ノート削除' className="delete-note-icon" onClick={() => {
-                    const confirmDelete = window.confirm(`ノート「${selectedNote.noteName}」を削除しますか？`);
-                    if (!confirmDelete) return;
-                    if (selectedNote.isPublic) {
-                        const confirmDeleteAgain = window.confirm("このノートは公開設定になっています。このノートを削除すると公開されているノートも削除されます。");
-                    }
-                    if(!confirmDelete) return;
-                    deleteNote(selectedNote);
-                }}/>
+               
 
 
                 {/* --- スニペット一覧モーダル --- */}
@@ -395,6 +235,12 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                     {isInfoMenuOpen && (
                         <div className="noteinfo-dropdown-menu">
                             <div>
+                                {`作成者: ${selectedNote.authorName ?? "(ニックネーム未設定)"}`}
+                            </div>
+                            <hr />
+                            <div>Email: <a href={`mailto:${selectedNote.authorEmail ?? "hogehoge@example.com"}`} title='メールを作成'>{selectedNote.authorEmail ?? "hogehoge@example.com"}</a></div>
+                            <hr/>
+                            <div>
                                 {`作成日: ${selectedNote.createdAt.slice(0, 16).replace('T', '/')}`}
                             </div>
                             <hr/>
@@ -410,44 +256,13 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                     )}
                 </div>
 
-
-                {/* --- 公開/非公開情報 トグルスイッチ --- */}
-                <div className="public-private-toggle" title={selectedNote.isPublic ? 'このノートは公開されています' : 'このノートは非公開です'}>
-                    <div className={`glider ${selectedNote.isPublic ? 'slide' : ''} ${!selectedNote.isPublic ? 'private' : ''}`}></div>
-                    <button
-                        className={`toggle-option ${!selectedNote.isPublic ? 'active' : ''}`}
-                        onClick={() => {
-                            const confirm = window.confirm(`ノート「${selectedNote.noteName}」を非公開にしますか？`);
-                            if (confirm) {
-                                updateNotePublicState(selectedNote, false);   
-                            } else {
-                                alert("公開/非公開設定をキャンセルしました.");
-                            }
-                        }}
-                    >
-                        PRIVATE
-                    </button>
-                    <button
-                        className={`toggle-option ${selectedNote.isPublic ? 'active' : ''}`}
-                        onClick={() => {
-                            const confirm = window.confirm(`ノート「${selectedNote.noteName}」を公開にしますか？`);
-                            if (confirm) {
-                                updateNotePublicState(selectedNote, true);   
-                            } else {
-                                alert("公開/非公開設定をキャンセルしました.");
-                            }
-                        }}
-                    >
-                        PUBLIC
-                    </button>
-                </div>
             </div>
 
         ) : (
-            <p>選択されたノートがここに表示されます</p>
+            <p>いろんな人の公開ノートを見てみよう！</p>
         )}
         </div>
     )
 }
 
-export default NoteContent
+export default NoteContentGlobal

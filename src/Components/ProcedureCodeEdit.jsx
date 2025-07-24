@@ -80,12 +80,16 @@ function ProcedureCodeEdit({ selectedNote, procedure }) {
             style.opacity = 0.3;
         }
 
+        if (line.startsWith('-')) {
+            style.color = 'red !important';
+        }
+
         return { style };
     };
 
     return (
         <div className="procedure-code-edit-wrapper">
-            {/* --- 切り替えトグル --- */}
+            {/* --- コード表示（差分 / 全体）切り替えトグル --- */}
             <div className="view-toggle-switch">
                 <div className={`glider ${activeView === 'fullcode' ? 'slide' : ''}`}></div>
                 <button
@@ -142,7 +146,6 @@ function ProcedureCodeEdit({ selectedNote, procedure }) {
                                         () => { alert('コピーに失敗しました'); }
                                     );
                                 }} />
-                                <FiEdit3 title='編集' className='codeEdit-code-edit' onClick={() => { /* 編集ロジック */ }} />
                             </div>
                         ))}
                     </>

@@ -8,7 +8,11 @@
   padding: 10px;
   position: relative; /* 相対位置を設定して、子要素の絶対配置を可能にする */
   /*border-radius: 10px;*/
+  z-index: 1;
 }
+
+/* ノート名表示（公開なら緑下線） */
+
 
 /* ノート名下部に表示されるタグ配列の表示スタイル */
 .note-tags-container {
@@ -50,7 +54,6 @@
   position: absolute;
   top: 60px;
   right: 20px;
-
 }
 .delete-procedure-icon:hover {
   color: red; /* ホバー時に色を変更 */
@@ -186,7 +189,7 @@
 /* ノート削除ボタンのスタイル */
 .delete-note-icon {
   position: absolute; /* 親要素を基準に絶対配置 */
-  top: 15px;          /* 上から15pxの位置 */
+  top: 10px;          /* 上から15pxの位置 */
   right: 15px;         /* 右から15pxの位置 */
   font-size: 24px;    /* アイコンのサイズを適宜調整 */
   cursor: pointer;    /* カーソルをポインターに変更 */
@@ -202,7 +205,7 @@
 .procedure-detail-open-button{
   position: absolute;
   top: 10px;
-  left: 0px;
+  right: 120px;
   border: none;
   background-color: rgb(248, 248, 248);
   cursor: pointer;
@@ -241,7 +244,7 @@
 ------------------------------------------------------------ */
 .modal-open-button {
     position: absolute;
-    top: 15px;
+    top: 10px;
     right: 70px;
     width: 25px;
     height: 25px;
@@ -268,6 +271,19 @@
 /* モーダルの中身のスタイル */
 .modal-container {
     position: relative;
+    z-index: 1001;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* 背景を少し暗くする */
+  z-index: 1000; /* 他の要素より手前に表示 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .modal-content {
   background-color: white;
@@ -305,4 +321,144 @@
 }
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+
+/* --- 公開/非公開 トグルスイッチ --- */
+.public-private-toggle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  display: flex;
+  width: 160px; /* トグルの幅 */
+  background-color: #f0f0f0; /* 背景色 */
+  border-radius: 5px;
+  padding: 4px;
+  margin-bottom: 20px; /* 他の要素との間隔 */
+  border: 1px solid #ccc;
+}
+
+/* スライドする背景部分 */
+.public-private-toggle .glider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  width: calc(50% - 4px);
+  background-color: #53d545; /* PUBLIC選択時の色 */
+  border-radius: 5px;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1;
+}
+
+/* isPublicがfalseの時（PRIVATE選択時）のGliderの色 */
+.public-private-toggle .glider.private {
+    background-color: #f34c4c; /* PRIVATE選択時の色 */
+}
+
+/* isPublicがtrueの時（PUBLIC選択時）に右へスライド */
+.public-private-toggle .glider.slide {
+  transform: translateX(100%);
+}
+
+/* 各ボタンのスタイル */
+.public-private-toggle .toggle-option {
+  flex: 1; /* ボタンが均等に幅を持つように */
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 2; /* Gliderより手前に表示 */
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+  color: #555; /* 非選択時の文字色 */
+}
+
+/* 選択されているボタンの文字色 */
+.public-private-toggle .toggle-option.active {
+  color: white;
+}
+
+/* ユーザボタンのスタイル */
+.noteinfo-menu-container {
+  position: absolute;
+  top: 3px;
+  right: 170px;
+}
+
+.noteinfo-icon-button {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  transition: background-color 0.2s;
+  color: var(--vscode-foreground);
+  font-size: x-large;
+  z-index: 1001;
+}
+
+.noteinfo-icon-button:hover {
+  color: rgb(47, 124, 28)
+}
+.noteinfo-icon-button:active {
+  transform: scale(0.8);
+}
+.noteinfo-icon-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+
+.noteinfo-dropdown-menu {
+  position: absolute;
+  top: 100%; /* ボタンのすぐ下に表示 */
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  width: 200px;
+  min-width: max-content;
+  z-index: 1001;
+  animation: fadeIn 0.1s ease-out;
+  text-align: left;
+}
+
+.noteinfo-dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  color: var(--vscode-foreground);
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.noteinfo-dropdown-menu button:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
+
+.noteinfo-dropdown-menu button svg {
+  width: 18px;
+  height: 18px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

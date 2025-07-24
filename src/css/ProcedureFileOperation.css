@@ -1,12 +1,16 @@
 /* 2つの<pre>要素がスペースを均等に分け合い、"中のテキストを左揃え" にする */
+.filetree-container {
+    overflow: auto;
+}
 .filetree-container > pre {
     flex: 1;
     padding: 1rem;
-    width: 100%;
     border-radius: 10px;
-    text-align: left; /* ← text-align をこちらに移動！ */
+    text-align: left;
     background-color: rgb(56, 56, 56);
     color: white;
+    max-width: 100%;
+    min-width: fit-content;
 }
 
 .filetree {

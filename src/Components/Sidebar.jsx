@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import '../css/App.css'
+import { useAuth } from '../context/AuthContext';
 import '../css/Sidebar.css';
 
 // Firebase使用のimport
@@ -9,8 +9,31 @@ import { collection, onSnapshot, addDoc, orderBy, query, where } from 'firebase/
 
 // react-iconsのimport
 import { BiSolidBookAdd } from "react-icons/bi"; // ノート新規作成ボタン
+import { FaUserShield } from "react-icons/fa6";
 
-function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
+function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, setSearchTerm, isGlobal }) {
+    const { currentUser } = useAuth(); // useAuthフックでユーザー情報を取得
+
+    // --- ユーザノートを取得する --- 
+    // → currentUserが変化した時
+    useEffect(() => {
+      if (!currentUser) return; // 未ログイン時は何もしない
+
+      // 自分のユーザーID (uid) と一致する'authorId'を持つノートのみを取得
+      const q = query(
+        collection(db, "note"),
+        where("authorId", "==", currentUser.uid),
+        orderBy("createdAt", "desc")
+      );
+      const unsub = onSnapshot(q, (snapshot) => {
+        setNotes(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      });
+
+      setSelectedNote(null);
+
+      return () => unsub();
+
+    }, [currentUser, isGlobal]); // currentUserが変わった時だけ実行
 
     useEffect(() => {
         let q;
@@ -20,10 +43,19 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
         if (searchTerm) {
             searchTerm.split('');
             // "tags"配列にsearchTermの文字列が含まれるドキュメントを検索
-            q = query(notesCollection, where("tags", "array-contains", searchTerm), orderBy("updatedAt", "desc"));
+            q = query(
+              notesCollection, 
+              where("authorId", "==", currentUser.uid),
+              where("tags", "array-contains", searchTerm), 
+              orderBy("updatedAt", "desc")
+            );
         } else {
             // 通常通り、全件取得
-            q = query(notesCollection, orderBy("updatedAt", "desc"));
+            q = query(
+              notesCollection, 
+              where("authorId", "==", currentUser.uid),
+              orderBy("updatedAt", "desc")
+            );
         }
 
         const unsub = onSnapshot(q, (snapshot) => {
@@ -38,6 +70,9 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
     async function createNote(noteName) {
         await addDoc(collection(db, "note"), {
             noteName: noteName,
+            authorId: currentUser.uid,
+            authorEmail: currentUser.email,
+            isPublic: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         });
@@ -45,15 +80,19 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
 
     return (
         <div className="side-bar">
-          <h2>Notes</h2>
 
+          {/* ========= ユーザノート表示 ========= */}
+          <FaUserShield className='mode-icon'/>
+          <h2>My Notes</h2>
+
+          {/* --- タグ検索ボックス --- */}
           <div className='search-note-byTag'>
             <input type='search' placeholder='タグで検索' value={searchTerm} className='search-note-input' onChange={(event) => {
                 setSearchTerm(event.target.value);
             }}/>
           </div>
 
-
+          {/* --- ユーザノート一覧表示 --- */}
           {notes.map((note) => {
             // 現在のノートが選択中のノートかどうかを判定し, isSelectedならclassNameに'selected'を追加
             const isSelected = selectedNote && selectedNote.id === note.id;
@@ -67,7 +106,8 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
               </div>
             );
           })}
-        
+
+          {/* --- ノート新規作成ボタン --- */}
           <BiSolidBookAdd title="ノート新規作成" className="create-note-icon" onClick={() => {
             // 新しいノートの名前をpromptで取得し, createNote関数を呼び出す
             const noteName = prompt("新しいノートの名前を入力してください:");
@@ -78,6 +118,7 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
             }
           }}/>
 
+          <hr/>
         </div>
     )
 }

@@ -61,9 +61,13 @@
   width: 30px;
   height: 30px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 .create-note-icon:hover {
   color: rgb(0, 110, 48);
 }
-
+.mode-icon {
+  width: 30px;
+  height: 30px;
+}
 

@@ -1,4 +1,17 @@
-/* 手順スニペットスタイル */
+/* 全体部分
+--------------------------------------------------------------------------------------- */ 
+.procedure-command-execution-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.label-command {
+  text-align: start;
+}
+
+/* 実行コマンド部分
+--------------------------------------------------------------------------------------- */ 
+/* 実行コマンドのコンテナ */ 
 .commandExecution-container {
   background-color: hsl(0, 0%, 19%);
   color: white;
@@ -8,6 +21,7 @@
   text-align: left;
   margin-bottom: 10px;
 }
+/* 実行コマンド'code'タグ */
 .commandExecution-command {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
@@ -19,24 +33,6 @@
 .copy-button:active  {
   transform: scale(0.8);
 }
-.fsPath-text {
-  /* 親要素(.procedure-snippet)を基準に絶対配置する */
-  position: absolute;
-
-  white-space: pre-wrap;
-  
-  /* 親要素の下からの距離 */
-  bottom: 0.5rem;
-
-  /* 親要素の右からの距離 */
-  right: 1rem;
-  
-  /* 見た目を調整するためのオプション（お好みで変更してください） */
-  font-size: 0.8em;
-  color: #b0b0b0;
-  margin: 0; /* pタグのデフォルトマージンをリセット */
-}
-
 /* スニペット用の編集ボタン */
 .codeEdit-code-edit {
   position: absolute;
@@ -45,4 +41,29 @@
 }
 .codeEdit-code-edit:active {
   transform: scale(0.8);
+}
+
+/* 実行コマンド部分ここまで ---------------------------------------------------------------- */ 
+
+/* 実行結果部分
+--------------------------------------------------------------------------------------- */ 
+/* 実行結果のコンテナ */ 
+.commandOutput-container {
+  background-color: hsl(0, 0%, 19%);
+  color: white;
+  padding: 1rem 1rem 1rem 1rem;
+  border-radius: 5px;
+  position: relative;
+  text-align: left;
+  margin-bottom: 10px;
+  overflow: auto; /* codeの横方向へのスクロール可 */
+  max-height: 500px;
+}
+/* 実行結果の'code'タグ */
+.commandOutput-code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+/* 実行結果がない場合の表示 */
+.commandOutput-nooutput {
+  color: gray;
 }
