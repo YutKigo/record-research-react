@@ -343,13 +343,12 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
 
                 {/* --- ノートの削除 --- */}
                 <RiDeleteBin6Line title='ノート削除' className="delete-note-icon" onClick={() => {
-                    const confirmDelete = window.confirm(`ノート「${selectedNote.noteName}」を削除しますか？`);
-                    let confirmDeleteAgain;
+                    const confirmDelete = 
+                        selectedNote.isPublic ? 
+                        window.confirm(`ノート「${selectedNote.noteName}」を削除しますか？（公開先からも削除されます）`) : 
+                        window.confirm(`ノート「${selectedNote.noteName}」を削除しますか？`);
+
                     if (!confirmDelete) return;
-                    if (selectedNote.isPublic) {
-                        confirmDeleteAgain = window.confirm("このノートは公開設定になっています。このノートを削除すると公開されているノートも削除されます。");
-                    }
-                    if(!confirmDeleteAgain) return;
                     deleteNote(selectedNote);
                 }}/>
 
