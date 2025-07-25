@@ -42,6 +42,7 @@ const Login = () => {
 
   return (
     <div className="login-container">
+        
       <h1>Dev Recorderへようこそ</h1>
       <p>続けるにはログインまたは新規登録をしてください。</p>
       {error && <p className="error-message">{error}</p>}

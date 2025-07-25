@@ -188,72 +188,63 @@ function NoteContentGlobal({ selectedNote, searchTerm, setSearchTerm }) {
                     </div>
                 ))}
 
-                
-
-               
-
-
-                {/* --- スニペット一覧モーダル --- */}
-                <div>
-                    <DiCodeBadge className='modal-open-button' title='スニペット一覧を開く' onClick={() => {
-                        setIsSnippetModal(true);
-                    }}/>
-
-                    <Modal className='modal-container' isOpen={isSnippetModal} overlayClassName='modal-overlay' >
-                        <div className='modal-content'>
-                            <SnippetDisplay selectedNote={selectedNote} />
-                        </div>
-                        <RiCloseLargeLine className='modal-close-button' onClick={() => setIsSnippetModal(false)} />
-                    </Modal>                    
-                </div>
-
-
-                {/* --- 全ての手順を開閉するボタン --- */}
-                <button className='procedure-detail-open-button' onClick={() => {
-                    // detailをすべて取得し, open属性をすべて統一
-                    const procedureDetails = document.querySelectorAll('.procedure-detail-opener');
-                    if (!allOpen) {
-                        procedureDetails.forEach((procedureDetail) => {
-                            procedureDetail.open = true;
-                            setAllOpen(true);
-                        })
-                    } else {
-                        procedureDetails.forEach((procedureDetail) => {
-                            procedureDetail.open = false;
-                            setAllOpen(false);
-                        })
-                    }
-                }}>{allOpen ? <BsArrowsCollapse title='全ての手順を閉じる' className="procedure-detail-open-icon"/> : <BsArrowsExpand title='全ての手順を開く' className="procedure-detail-open-icon"/>}</button>
-
-
-                {/* --- ノート情報表示 --- */}
-                <div className='noteinfo-menu-container'>
-                    <RxInfoCircled className='noteinfo-icon-button' title='ノート情報' onClick={() => {
-                        setIsInfoMenuOpen(!isInfoMenuOpen)
-                    }}/>
-
-                    {isInfoMenuOpen && (
-                        <div className="noteinfo-dropdown-menu">
-                            <div>
-                                {`作成者: ${selectedNote.authorName ?? "(ニックネーム未設定)"}`}
+                <div className='note-ope-global'>
+                    {/* --- スニペット一覧モーダル --- */}
+                    <div>
+                        <DiCodeBadge className='modal-open-button' title='スニペット一覧を開く' onClick={() => {
+                            setIsSnippetModal(true);
+                        }}/>
+                        <Modal className='modal-container' isOpen={isSnippetModal} overlayClassName='modal-overlay' >
+                            <div className='modal-content'>
+                                <SnippetDisplay selectedNote={selectedNote} />
                             </div>
-                            <hr />
-                            <div>Email: <a href={`mailto:${selectedNote.authorEmail ?? "hogehoge@example.com"}`} title='メールを作成'>{selectedNote.authorEmail ?? "hogehoge@example.com"}</a></div>
-                            <hr/>
-                            <div>
-                                {`作成日: ${selectedNote.createdAt.slice(0, 16).replace('T', '/')}`}
+                            <RiCloseLargeLine className='modal-close-button' onClick={() => setIsSnippetModal(false)} />
+                        </Modal>
+                    </div>
+                    {/* --- 全ての手順を開閉するボタン --- */}
+                    <button className='procedure-detail-open-button' onClick={() => {
+                        // detailをすべて取得し, open属性をすべて統一
+                        const procedureDetails = document.querySelectorAll('.procedure-detail-opener');
+                        if (!allOpen) {
+                            procedureDetails.forEach((procedureDetail) => {
+                                procedureDetail.open = true;
+                                setAllOpen(true);
+                            })
+                        } else {
+                            procedureDetails.forEach((procedureDetail) => {
+                                procedureDetail.open = false;
+                                setAllOpen(false);
+                            })
+                        }
+                    }}>{allOpen ? <BsArrowsCollapse title='全ての手順を閉じる' className="procedure-detail-open-icon"/> : <BsArrowsExpand title='全ての手順を開く' className="procedure-detail-open-icon"/>}</button>
+                    {/* --- ノート情報表示 --- */}
+                    <div className='noteinfo-menu-container'>
+                        <RxInfoCircled className='noteinfo-icon-button' title='ノート情報' onClick={() => {
+                            setIsInfoMenuOpen(!isInfoMenuOpen)
+                        }}/>
+                        {isInfoMenuOpen && (
+                            <div className="noteinfo-dropdown-menu">
+                                <div>
+                                    {`作成者: ${selectedNote.authorName ?? "(ニックネーム未設定)"}`}
+                                </div>
+                                <hr />
+                                <div>Email: <a href={`mailto:${selectedNote.authorEmail ?? "hogehoge@example.com"}`} title='メールを作成'>{selectedNote.authorEmail ?? "hogehoge@example.com"}</a></div>
+                                <hr/>
+                                <div>
+                                    {`作成日: ${selectedNote.createdAt.slice(0, 16).replace('T', '/')}`}
+                                </div>
+                                <hr/>
+                                <div>
+                                    {`更新日: ${selectedNote.updatedAt.slice(0, 16).replace('T', '/')}`}
+                                </div>
+                                <hr />
+                                <div>
+                                    状態: {selectedNote.isPublic ? "公開中" : "非公開"}
+                                </div>
+                                {/* 他にメニュー項目があればここに追加 */}
                             </div>
-                            <hr/>
-                            <div>
-                                {`更新日: ${selectedNote.updatedAt.slice(0, 16).replace('T', '/')}`}
-                            </div>
-                            <hr />
-                            <div>
-                                状態: {selectedNote.isPublic ? "公開中" : "非公開"}
-                            </div>
-                            {/* 他にメニュー項目があればここに追加 */}
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
             </div>

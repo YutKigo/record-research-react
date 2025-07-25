@@ -1,86 +1,3 @@
-// import { useState, useEffect } from 'react';
-// import './css/App.css';
-
-// // Firebase使用のimport
-// import { db } from './firebase';
-// import { collection, onSnapshot, addDoc, orderBy, query } from 'firebase/firestore';
-
-// // Componentsのimport
-// import NoteContent from './Components/NoteContent';
-// import Sidebar from './Components/Sidebar';
-
-// // react-iconsのimport
-// import { GoMoveToTop } from "react-icons/go";
-
-// function App() {
-//   const [notes, setNotes] = useState([]);
-//   const [selectedNote, setSelectedNote] = useState(null);
-//   const [searchTerm, setSearchTerm] = useState("");
-
-//   // --- ▼ここから追記▼ ---
-//   // スクロールボタンの表示・非表示を管理するstate
-//   const [isVisible, setIsVisible] = useState(false);
-
-//   // スクロール位置をチェックしてボタンの表示を切り替える関数
-//   const toggleVisibility = () => {
-//     if (window.scrollY > 300) { // 300px以上スクロールしたら表示
-//       setIsVisible(true);
-//     } else {
-//       setIsVisible(false);
-//     }
-//   };
-
-//   // ページトップにスムーズにスクロールする関数
-//   const scrollToTop = () => {
-//     window.scrollTo({
-//       top: 0,
-//       behavior: 'smooth'
-//     });
-//   };
-
-//   useEffect(() => {
-//     // スクロールイベントリスナーを追加
-//     window.addEventListener('scroll', toggleVisibility);
-
-//     // コンポーネントがアンマウントされるときにイベントリスナーを削除
-//     return () => {
-//       window.removeEventListener('scroll', toggleVisibility);
-//     };
-//   }, []);
-//   // --- ▲ここまで追記▲ ---
-
-//   useEffect(() => {
-//     const unsub = onSnapshot(query(collection(db, "note"), orderBy("createdAt", "desc")), (snapshot) => {
-//       setNotes(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-//     });
-//     setSelectedNote(null);
-//     return () => unsub();
-//   }, []);
-
-//   return (
-//     <div className="App container">
-//       <div className='header'>
-//         <h1>Dev Recorder for WebApp!</h1>
-//       </div>
-
-//       <div className="main">
-//         <Sidebar notes={notes} setNotes={setNotes} selectedNote={selectedNote} setSelectedNote={setSelectedNote} searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-//         <NoteContent selectedNote={selectedNote} setSelectedNote={setSelectedNote} searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-//       </div>
-      
-//       {/* isVisibleがtrueの場合のみボタンを表示 */}
-//       {isVisible && (
-//         // onClickをdivに移動し、円全体をクリック可能にする
-//         <div onClick={scrollToTop} className='scrollTopButton' title="ページのトップへ"> 
-//           <GoMoveToTop />
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default App;
-
 
 // Firebase機能のimport
 import { useState, useEffect } from 'react';
@@ -145,11 +62,23 @@ function MainApp() {
     <div className="App container">
 
       <div className={!isGlobal ? "header" : "header header-global"}>
+        {/* <h1 style={{ flex: 2, textAlign: 'center' }}>Dev Recorder for WebApp!</h1> */}
+        <img 
+          onClick={() => {
+            window.location.reload();
+          }}
+          style={{
+            cursor: "pointer",
+            marginLeft: "3rem",
+            width: "150px",
+          }}
+        
+          src="/logo.png" 
+          alt="アプリのロゴ" 
+        />
+
         {/* ヘッダー左側のスペース確保用 */}
         <div style={{ flex: 1 }}></div>
-
-        <h1 style={{ flex: 2, textAlign: 'center' }}>Dev Recorder for WebApp!</h1>
-
         {/* ✨ DROPDOWN: ユーザーメニューコンテナ */}
         <div className="user-menu-container" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
 
@@ -197,8 +126,18 @@ function MainApp() {
                   <small>{currentUser.email}</small>
                 </span>
               </div>
+
               <hr />
-              <button onClick={async () => {
+
+              <button style={{cursor: 'pointer'}}>
+                <span>作成ノート: {notes.length}件</span>
+                <span>/</span>
+                <span>公開中ノート: {notes.filter((note) => note.isPublic === true).length}件</span>
+              </button>
+
+              <hr />
+
+              <button style={{cursor: 'pointer'}} onClick={async () => {
                 const nickName = prompt("ニックネームを入力してください");
                 if (!nickName) {
                   alert("ニックネーム設定を中断しました");
@@ -220,7 +159,9 @@ function MainApp() {
               }}>
                 <span>ニックネームを変更</span>
               </button>
+
               <hr/>
+
               <button onClick={handleLogout}>
                 <MdLogout/>
                 <span>ログアウト</span>

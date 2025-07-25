@@ -20,7 +20,7 @@
   padding: auto;
   text-align: center;
   display: flex;             /* Flexboxレイアウトを有効にする */
-  justify-content: center;   /* 水平方向（主軸）の中央揃え */
+  justify-content: flex-start;   /* 水平方向（主軸）の中央揃え */
   align-items: center;  
   margin: 5px 0; /* 上下のマージンを追加 */
   position: relative;
@@ -202,3 +202,54 @@
   font-size: 40px;
   color: #555;
 }
+
+/* --- 画面切り替わるアニメーション --- */
+/* --- ▼ アニメーション用のCSSを追加 ▼ --- */
+
+/* main領域内のコンテンツを囲む親要素に適用します。
+  これにより、子要素（SidebarやNoteContentなど）の切り替え時に
+  トランジションが適用されるようになります。
+*/
+.main > * {
+  /* opacity（透明度）の変化を0.3秒かけて行う設定 */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* アニメーションの初期状態と最終状態を定義します。
+  ReactがDOMを切り替える際に、一瞬で切り替わるのではなく
+  このトランジションが適用されることで、滑らかな変化に見えます。
+*/
+
+/* フェードアウト用 (古いコンポーネントが消えるとき) */
+.fade-out {
+  opacity: 0;
+}
+
+/* フェードイン用 (新しいコンポーネントが現れるとき) */
+.fade-in {
+  opacity: 1;
+}
+
+/* コンポーネントを内包するdivに直接アニメーションを設定する方法も有効です。
+  今回は<main>の直下の子要素( <></> で囲まれたコンポーネント群)に適用します。
+*/
+.main {
+  position: relative; /* 子要素の配置の基準にする */
+}
+
+.main > div {
+  animation: fadeInAnimation 0.5s ease-in-out;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(10px); /* 少し下から表示 */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- ▲ ここまで ▲ --- */

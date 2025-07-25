@@ -71,6 +71,7 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
         await addDoc(collection(db, "note"), {
             noteName: noteName,
             authorId: currentUser.uid,
+            authorName: currentUser.displayName,
             authorEmail: currentUser.email,
             isPublic: false,
             createdAt: new Date().toISOString(),
