@@ -74,10 +74,10 @@
     margin: 1.5rem 0 0 0 !important;
 }
 .codeEdit-code-added {
-    border: rgb(145, 235, 12) solid 1.5px;   
+    border: rgb(145, 235, 12) solid 2.5px;   
 }
 .codeEdit-code-deleted {
-    border: rgb(245, 63, 63) solid 1.5px;
+    border: rgb(245, 63, 63) solid 2.5px;
 }
 
 /* 関数名表示 */ 

@@ -138,7 +138,7 @@ function MainApp() {
               <hr />
 
               <button style={{cursor: 'pointer'}} onClick={async () => {
-                const nickName = prompt("ニックネームを入力してください");
+                const nickName = prompt("新規ニックネームを入力してください");
                 if (!nickName) {
                   alert("ニックネーム設定を中断しました");
                   return ;

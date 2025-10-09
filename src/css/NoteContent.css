@@ -1,131 +1,277 @@
+/* === NoteContent.css (要件修正版) === */
+
+/* --- 1. コンテンツ ページ全体 --- */
 .content {
   width: 75%;
   max-width: 75%;
   overflow-wrap: break-word;
   display: flex;
   flex-direction: column;
-  background-color: rgb(248, 248, 248);
+  background-color: var(--vscode-editor-background, rgb(248, 248, 248));
   padding: 10px;
-  position: relative; /* 相対位置を設定して、子要素の絶対配置を可能にする */
-  /*border-radius: 10px;*/
+  position: relative; 
   z-index: 1;
 }
 
-/* ノート名表示（公開なら緑下線） */
+/* --- 2. ノート ヘッダー --- */
+.note-name-container {
+  padding: 5px 10px 10px 10px;
+  margin-bottom: 25px;
+}
+
+/* ★★★ 要件3 修正: h1タグから公開/非公開の色分けロジックを削除 ★★★ */
+.note-name-container h1.note-name {
+  color: var(--vscode-editor-foreground); /* 常にデフォルトの文字色 */
+  margin: 0;
+  padding: 0;
+  font-size: 2rem; /* h1としてしっかり大きくする */
+}
 
 
-/* ノート名下部に表示されるタグ配列の表示スタイル */
-.note-tags-container {
+/* --- 3. タスクリスト & タスク作成ボタン --- */
+.task-list-container {
   display: flex;
-  flex-wrap: wrap; /* 要素がコンテナを超えた場合に折り返しを許可 */
-  flex-direction: row;
-  justify-content: center;
-  padding: 1rem;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
 }
-.note-tags {
-  color: #4b95e9;
-  white-space: nowrap; /* タグ名が長くても改行されないようにする */
-}
-.note-tags:hover {
-  color: #0831e7;
+.task-list-container > h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--vscode-editorHint-foreground);
+  margin: 0 5px 5px 5px;
 }
 
-/* NoteContentの手順ごとのスタイル */
-.procedure-type-icon {
-    background-color: #555;
-    color: white;
-    border-radius: 10rem;
-    padding: 0.6rem;
+.create-task-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  margin: 10px 0 20px 0;
+  border: 1px dashed var(--vscode-button-border, #ccc);
+  background-color: var(--vscode-editorWidget-background, #f3f3f3);
+  color: var(--vscode-button-foreground, #333);
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.create-task-button:hover {
+  background-color: var(--vscode-button-hoverBackground, #e0e0e0);
+  color: var(--vscode-button-primaryForeground);
+}
+
+
+/* --- 4. タスクアイテム --- */
+.task-detail-opener {
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--vscode-panel-border, #ddd);
+  margin-bottom: 15px;
+}
+
+/* 要件1: タスク名の<summary> */
+.task-summary {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--vscode-sideBarTitle-foreground, #333);
+  padding: 12px 16px;
+  background-color: var(--vscode-sideBar-background, #f5f5f5);
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  list-style: none; 
+}
+.task-summary::-webkit-details-marker { display: none; }
+.task-summary::marker { display: none; }
+
+.task-summary:hover {
+  background-color: var(--vscode-list-hoverBackground, #eaeaea);
+}
+.task-summary.task-selected {
+  background-color: var(--vscode-list-activeSelectionBackground, #e0e0e0);
+  color: var(--vscode-list-activeSelectionForeground);
+}
+
+.task-name {
+  flex-grow: 1; 
+  text-align: left; /* ★要件1: 左揃え */
+}
+.task-name-input { 
+  font-size: 1.6rem;
+  font-weight: 600;
+  border: 1px solid var(--vscode-input-border);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  flex-grow: 1;
+}
+
+
+/* タスク名の編集・削除アイコンのスタイル (ホバー対応版) */
+.task-edit-icon,
+.task-delete-icon {
+  font-size: 1.2rem;
+  margin-left: 12px;
+  
+  /* ★ 修正: デフォルトの透明度を 0（不可視）に変更 */
+  opacity: 0; 
+  
+  transition: opacity 0.1s ease-in-out; /* スムーズに表示/非表示するためのトランジション */
+  flex-shrink: 0; 
+  z-index: 5; 
+  /* (注: JS側でクリックイベントを制御しているため、CSSでの pointer-events 制御は不要) */
+}
+
+/* ★ 追加: 親(.task-summary)のホバー時にアイコンを表示(opacity: 0.6) */
+.task-summary:hover .task-edit-icon,
+.task-summary:hover .task-delete-icon {
+  opacity: 0.6; /* ホバーで半透明表示 */
+}
+
+/* ★ 変更なし: アイコン自体をホバーした時は 100% 表示 (色が濃くなる) */
+.task-edit-icon:hover,
+.task-delete-icon:hover {
+  opacity: 1; 
+  color: var(--vscode-button-foreground);
+}
+
+.task-delete-icon:hover {
+  color: var(--vscode-errorForeground, red);
+}
+
+
+/* --- 5. 手順リスト (タスク内にネスト) --- */
+.procedure-list-container {
+  padding: 10px;
+  background-color: var(--vscode-editorWidget-background, #fafafa);
+  border-top: 1px solid var(--vscode-panel-border, #ddd);
 }
 
 .procedure-item {
-  border-bottom: #e3dfdf solid 1px;
-  margin: 1rem;
-  padding: 1rem;
+  border-bottom: 1px dashed var(--vscode-dropdown-border, #8d8a8a);
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.procedure-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
-/* 手順削除ボタンのスタイル */
-.procedure-name-div { /* procedure-name-divの中にprocedure-name（手順名表示）とdelete-procedure-icon（手順削除ボタン）がある */
+/* 要件2: 手順名の<summary> */
+.procedure-name-div-nested {
   display: flex;
-  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  cursor: pointer;
+  list-style: none; 
 }
+.procedure-name-div-nested::-webkit-details-marker { display: none; }
+.procedure-name-div-nested::marker { display: none; }
+
+.procedure-name-div-nested h2 {
+  font-size: 1.25rem; 
+  font-weight: 600;
+  margin: 0;
+  flex-grow: 1;
+  text-align: left; /* ★要件1: 左揃え */
+  color: var(--vscode-editor-foreground);
+}
+
+.procedure-feeling-display {
+  display: flex;
+  flex-wrap: wrap; 
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 0 15px 0;
+  cursor: pointer;
+  gap: 8px; 
+}
+
+.procedure-edit-icon,
 .delete-procedure-icon {
-  position: absolute;
-  top: 60px;
-  right: 20px;
+  font-size: 1.1rem;
+  margin-left: 10px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  color: var(--vscode-icon-foreground);
+}
+.procedure-edit-icon:hover,
+.delete-procedure-icon:hover {
+  opacity: 1;
 }
 .delete-procedure-icon:hover {
-  color: red; /* ホバー時に色を変更 */
-}
-.delete-procedure-icon:active {
-  transform: scale(0.8);
+  color: var(--vscode-errorForeground, red);
 }
 
-/* 手順ごとのタグ表示 */
+.create-procedure-icon {
+  width: 30px;
+  height: 30px;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.create-procedure-icon:hover {
+  color: var(--vscode-button-primaryBackground, green);
+  opacity: 1;
+}
+
+
+/* --- 6. 手順コンテンツ (説明、コードなど) --- */
+.procedure-content-wrapper {
+  padding: 0 10px 10px 10px;
+}
+
 .tag-container {
   display: flex;
-  justify-self: start;
-  margin: 0 0 10px 0;
+  flex-wrap: wrap; 
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 0 15px 0;
   cursor: pointer;
+  gap: 8px; 
 }
 .tag-icon {
-  margin-top: 5px;
-  margin-right: 5px;
+  font-size: 1rem;
+  color: var(--vscode-icon-foreground);
 }
 .procedure-tag {
-  color: #4b95e9;
-  margin-right: 10px;
-  margin-bottom: 5px;
+  color: var(--vscode-textLink-foreground, #4b95e9);
+  margin-right: 5px;
 }
-.procedure-tag:hover {
-  color: #0831e7;
+.procedure-tag u:hover {
+  color: var(--vscode-textLink-activeForeground, #0831e7);
 }
-
 .create-tag {
-  margin-left: 10px;
-  margin-top: 0px;
-  width: 23px;
-  height: 23px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  opacity: 0.7;
 }
-.create-tag:active {
-  transform: scale(0.8)
-}
+.create-tag:hover { opacity: 1; }
 .delete-tag {
-  color: #4b95e9;
+  color: var(--vscode-textLink-foreground, #4b95e9);
+  cursor: pointer;
+  border: none; background: none; padding: 0;
 }
 .delete-tag:hover {
-  color: red;
-}
-.delete-tag:active {
-  transform: scale(0.8)
+  color: var(--vscode-errorForeground, red);
 }
 
-/* 手順内のフィールドのスタイル */ 
-/* 手順名スタイル */
-.procedure-name {
-  text-align: left;
-  cursor: pointer;
-}
-
-.copy-button {
-  position: absolute;
-  top: 10px;
-  right: 40px;
-}
-.copy-button:active  {
-  transform: scale(0.8);
-}
-
-
-/* 手順内説明スニペット */
 .procedure-description {
   display: flex;
-  align-items: flex-start; /* ← この行でアイコンが小さくなるのを防ぐ */
-  background-color: hsl(0, 0%, 97%);
-  color: black;
+  align-items: flex-start;
+  background-color: var(--vscode-textBlockQuote-background, hsl(0, 0%, 97%));
+  color: var(--vscode-editor-foreground);
   padding: 1rem;
-  border: black solid 1px;
+  border: 1px solid var(--vscode-textBlockQuote-border, #eee);
   border-radius: 5px;
   text-align: left;
   position: relative;
@@ -135,330 +281,234 @@
 .description-icon {
   width: 20px;
   height: 20px;
-  margin-right: 20px;
-  flex-shrink: 0; /* この行でアイコンが小さくなるのを防ぐ */
+  margin-right: 15px;
+  flex-shrink: 0; 
+  margin-top: 4px; 
 }
-.procedure-attention {
-  display: flex;
-  align-items: flex-start; /* ← この行でアイコンが小さくなるのを防ぐ */
-  background-color: hsl(30, 17%, 98%);
-  color: black;
-  padding: 1rem;
-  border: black dashed 1px;
-  border-radius: 5px;
-  text-align: left;
-  position: relative;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+.procedure-description-text {
+  flex: 1; 
+  min-width: 0;
+  word-break: break-word;
 }
-.notification-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 20px;
-  flex-shrink: 0; /* この行でアイコンが小さくなるのを防ぐ */
-}
-
-/* 手順名編集ボタン */
-.procedure-edit-icon {
-  position:absolute;
-  top: 60px;
-  right: 55px;
-}
-.procedure-edit-icon:active {
-  transform: scale(0.8);
-}
-/* 説明・注意用の編集ボタン */
-.edit-button {
+.edit-description-icon {
   position: absolute;
-  top: 10px;
-  right: 10px;
-}
-.edit-button:active {
-  transform: scale(0.8);
-}
-/* 手順作成ボタン */
-.create-procedure-icon {
-  width: 30px;
-  height: 30px;
-  margin-top: 50px;
-  margin-bottom: 70px
-}
-.create-procedure-icon:hover {
-  color: rgb(0, 110, 48);
-}
-/* ノート削除ボタンのスタイル */
-.delete-note-icon {
-  position: absolute; /* 親要素を基準に絶対配置 */
-  top: 10px;          /* 上から15pxの位置 */
-  right: 15px;         /* 右から15pxの位置 */
-  font-size: 24px;    /* アイコンのサイズを適宜調整 */
-  cursor: pointer;    /* カーソルをポインターに変更 */
-}
-.delete-note-icon:hover {
-  color: red; /* ホバー時に色を変更 */
-}
-.delete-note-icon:active {
-  transform: scale(0.8);
-}
-
-/* 手順の全展開・全収束を制御するボタン */
-.procedure-detail-open-button{
-  position: absolute;
-  top: 10px;
-  right: 120px;
-  border: none;
-  background-color: rgb(248, 248, 248);
+  top: 8px;
+  right: 8px;
+  font-size: 1rem;
   cursor: pointer;
+  z-index: 5;
+  color: var(--vscode-icon-foreground);
+  opacity: 0.6;
+  padding: 5px;
+  border-radius: 4px;
 }
-.procedure-detail-open-button:hover {
-  color: #f388e6;
-}
-.procedure-detail-open-button {
-  transform: scale(0.8);
-}
-.procedure-detail-open-icon {
-  width: 25px;
-  height: 25px;
-}
-/* detailsタグのアニメーション */
-.procedure-content-wrapper {
-  overflow: hidden;
-  transition: max-height 0.7s ease-in-out;
-  max-height: 0;
-}
-.procedure-detail-opener[open] > .procedure-content-wrapper {
-  max-height: 1000px; /* ★コンテンツが収まる十分な高さを指定 */
-}
-.procedure-detail-opener > .procedure-name-div {
-  transition: margin-bottom 0.7s ease-in-out;
-}
-.procedure-detail-opener[open] > .procedure-name-div {
-  margin-bottom: 15px; /* 開いた時にsummaryとコンテンツの間に少し余白を作る */
-}
-.procedure-name {
-  transition: transform 0.3s;
-  display: inline-block; /* transformを適用するため */
+.edit-description-icon:hover {
+  opacity: 1;
+  background-color: var(--vscode-list-hoverBackground, rgba(0, 123, 255, 0.1));
 }
 
-/* スニペット集モーダルの設定 
------------------------------------------------------------- */
-.modal-open-button {
-    position: absolute;
-    top: 10px;
-    right: 70px;
-    width: 25px;
-    height: 25px;
-}
-.modal-open-button:hover {
-    color: #001a8e;
-}
-.modal-open-button:active {
-    transform: scale(0.8);
-}
-
-.modal-container {
+.description-editor {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
 }
-/* モーダルの中身のスタイル */
-.modal-container {
-    position: relative;
-    z-index: 1001;
+.description-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--vscode-input-border, #ccc);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 120px;
+  box-sizing: border-box;
 }
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7); /* 背景を少し暗くする */
-  z-index: 1000; /* 他の要素より手前に表示 */
+.description-editor-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-end;
 }
-.modal-content {
-  background-color: white;
-  padding: 20px 20px 20px 20px; /* 閉じるボタンと被らないように右のパディングを調整 */
-  border-radius: 8px;
-  position: relative; /* 閉じるボタンの基準位置 */
-  
-  width: 90vw; /* 横幅が広くなりすぎないように最大幅を指定 (任意) */
-  height: 85vh; /* ビューポートの高さの85%を最大高に設定 */
-  overflow-y: auto; /* 縦方向にはみ出したコンテンツをスクロール可能にする */
-}
-.modal-close-button {
-  position: absolute;
-  top: 40px; /* 位置を微調整 */
-  right: 25px; /* 位置を微調整 */
+.description-save-button,
+.description-cancel-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 24px;
-  color: whitesmoke;
+  font-weight: 600;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
 }
-.modal-close-button:active {
-    transform: scale(0.8);
+.description-save-button {
+  background-color: var(--vscode-button-primaryBackground, #007bff);
+  color: var(--vscode-button-primaryForeground, white);
 }
-
-/* Webkit系ブラウザ用のスクロールバーのスタイル（任意） */
-.modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-.modal-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-.modal-content::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 10px;
-}
-.modal-content::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.description-cancel-button:hover {
+  background-color: var(--vscode-button-hoverBackground, #5a6268);
 }
 
+.procedure-description-text h1, .procedure-description-text h2, .procedure-description-text h3 {
+  border-bottom: 1px solid var(--vscode-panel-border, #eee);
+  padding-bottom: 0.3em;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+.procedure-description-text p, .procedure-description-text ul, .procedure-description-text ol {
+  font-size: 14px;
+  font-weight: bold;
+}
+.procedure-description-text h1, .procedure-description-text h2, .procedure-description-text h3 {
+  border-bottom: 1px solid var(--vscode-panel-border, #eee);
+  padding-bottom: 0.3em;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+.procedure-description-text p, .procedure-description-text ul, .procedure-description-text ol {
+  margin-bottom: 0.8rem;
+}
+.procedure-description-text pre {
+  background-color: var(--vscode-textPreformat-background, #eee);
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+.procedure-description-text code {
+  background-color: var(--vscode-textPreformat-background, #e0e0e0);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.95rem;
+}
+.procedure-description-text table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+}
+.procedure-description-text th, .procedure-description-text td {
+  border: 1px solid var(--vscode-panel-border, #ddd); padding: 8px;
+}
+.procedure-description-text th {
+  background-color: var(--vscode-editorWidget-background, #f2f2f2);
+}
 
-/* --- 公開/非公開 トグルスイッチ --- */
-.public-private-toggle {
-  position: absolute;
-  top: 5px;
-  left: 5px;
+
+/* --- 7. ノート全体フッター (ツールバー) --- */
+/* ★★★ 要件1 修正: position: sticky を削除し、通常のブロック要素としてコンテンツの末尾に配置 ★★★ */
+.note-content-toolbar {
   display: flex;
-  width: 160px; /* トグルの幅 */
-  background-color: #f0f0f0; /* 背景色 */
+  align-items: center;
+  justify-content: flex-start; 
+  padding: 10px 5px;
+  /* border-bottom: 2px solid var(--vscode-panel-border, #ccc); */
+  margin-bottom: 0px; /* 上のコンテンツとのマージン */
+  gap: 10px;
+  /* position: sticky, bottom: 0, z-index: 10 を削除 */
+}
+
+.public-private-toggle {
+  display: flex;
+  width: 160px;
+  background-color: var(--vscode-input-background, #f0f0f0);
   border-radius: 5px;
   padding: 4px;
-  margin-bottom: 20px; /* 他の要素との間隔 */
-  border: 1px solid #ccc;
+  border: 1px solid var(--vscode-input-border, #ccc);
+  position: relative; 
 }
-
-/* スライドする背景部分 */
 .public-private-toggle .glider {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  height: calc(100% - 8px);
-  width: calc(50% - 4px);
-  background-color: #53d545; /* PUBLIC選択時の色 */
+  top: 4px; left: 4px;
+  height: calc(100% - 8px); width: calc(50% - 4px);
+  /* ★★★ 要件2 修正: VSCode変数ではなく、ハードコードされた緑色をデフォルトに設定 ★★★ */
+  background-color: #53d545; /* PUBLIC (緑) */
   border-radius: 5px;
   transition: transform 0.3s ease-in-out;
   z-index: 1;
 }
-
-/* isPublicがfalseの時（PRIVATE選択時）のGliderの色 */
 .public-private-toggle .glider.private {
-    background-color: #f34c4c; /* PRIVATE選択時の色 */
+    background-color: var(--vscode-errorForeground, #f34c4c); /* PRIVATE (赤) */
 }
-
-/* isPublicがtrueの時（PUBLIC選択時）に右へスライド */
 .public-private-toggle .glider.slide {
   transform: translateX(100%);
 }
-
-/* 各ボタンのスタイル */
 .public-private-toggle .toggle-option {
-  flex: 1; /* ボタンが均等に幅を持つように */
-  padding: 8px 12px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  z-index: 2; /* Gliderより手前に表示 */
-  font-weight: bold;
+  flex: 1; padding: 8px 12px; border: none; background: none;
+  cursor: pointer; z-index: 2; font-weight: bold;
   transition: color 0.3s ease-in-out;
-  color: #555; /* 非選択時の文字色 */
+  color: var(--vscode-foreground, #555);
 }
-
-/* 選択されているボタンの文字色 */
 .public-private-toggle .toggle-option.active {
-  color: white;
+  color: var(--vscode-button-primaryForeground, white);
 }
 
-/* ユーザボタンのスタイル */
-.noteinfo-menu-container {
-  position: absolute;
-  top: 3px;
-  right: 170px;
+.toolbar-spacer {
+  flex-grow: 1;
 }
 
-.noteinfo-icon-button {
-  background: none;
-  border: none;
-  border-radius: 50%;
-  padding: 10px;
+.toolbar-icon-button {
+  background: none; border: none;
+  font-size: 1.5rem; 
+  color: var(--vscode-icon-foreground, #444);
+  opacity: 0.8;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  transition: background-color 0.2s;
-  color: var(--vscode-foreground);
-  font-size: x-large;
-  z-index: 1001;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+.toolbar-icon-button:hover {
+  opacity: 1;
+  background-color: var(--vscode-list-hoverBackground, #eaeaea);
+}
+.toolbar-icon-button:active {
+  transform: scale(0.9);
+}
+.toolbar-icon-button.delete-note:hover {
+  color: var(--vscode-errorForeground, red);
 }
 
-.noteinfo-icon-button:hover {
-  color: rgb(47, 124, 28)
+.noteinfo-menu-container {
+  position: relative;
 }
-.noteinfo-icon-button:active {
-  transform: scale(0.8);
-}
-.noteinfo-icon-button svg {
-  width: 24px;
-  height: 24px;
-}
-
-
 .noteinfo-dropdown-menu {
   position: absolute;
-  top: 100%; /* ボタンのすぐ下に表示 */
+  top: 100%; 
   right: 0;
-  background-color: white;
-  border: 1px solid var(--vscode-panel-border);
+  background-color: var(--vscode-editorWidget-background, white);
+  border: 1px solid var(--vscode-panel-border, #ccc);
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   padding: 8px;
   width: 200px;
   min-width: max-content;
   z-index: 1001;
+  text-align: left;
   animation: fadeIn 0.1s ease-out;
-  text-align: left;
+}
+.noteinfo-dropdown-menu div {
+  padding: 4px 8px; /* ドロップダウン内のテキストに余白を追加 */
 }
 
-.noteinfo-dropdown-menu button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px;
-  background-color: transparent;
-  border: none;
-  color: var(--vscode-foreground);
-  text-align: left;
-  border-radius: 4px;
+
+/* --- 8. スニペットモーダル (変更なし) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex; justify-content: center; align-items: center;
+}
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 90vw;
+  height: 85vh;
+  overflow-y: auto;
+}
+.modal-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   cursor: pointer;
+  font-size: 24px;
+  color: #333; 
+  z-index: 1002;
 }
-
-.noteinfo-dropdown-menu button:hover {
-  background-color: var(--vscode-list-hoverBackground);
-}
-
-.noteinfo-dropdown-menu button svg {
-  width: 18px;
-  height: 18px;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.modal-close-button:active { transform: scale(0.8); }

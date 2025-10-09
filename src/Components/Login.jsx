@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import '../css/Login.css'; 
-import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { AiOutlineQuestionCircle, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
+  const [email, setEmail] = useState(''); // メールアドレス入力状態
+  const [password, setPassword] = useState(''); // パスワード入力状態
+  const [error, setError] = useState(''); // エラーメッセージ状態 
+  const [info, setInfo] = useState(''); // 情報メッセージ状態
+  const [showPassword, setShowPassword] = useState(false);  // パスワード表示状態
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,6 +49,7 @@ const Login = () => {
       {error && <p className="error-message">{error}</p>}
       {info && <p className="info-message">{info}</p>}
       <form>
+        {/* --- メールアドレス入力欄 --- */}
         <input 
           type="email" 
           placeholder="メールアドレス" 
@@ -55,13 +57,24 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)} 
           required 
         />
-        <input 
-          type="password" 
-          placeholder="パスワード" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
-          required 
-        />
+
+        {/* --- パスワード入力欄 --- */}
+        <div className="password-input-container">
+          <input 
+            // 変更点: showPasswordの状態に応じてtypeを'text'か'password'に切り替え
+            type={showPassword ? "text" : "password"} 
+            placeholder="パスワード" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
+          />
+          {/* アイコンを追加し、クリックでshowPasswordの状態をトグル（反転）させる */}
+          <span className="password-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </span>
+        </div>
+
+        {/* --- ログイン・新規登録ボタン --- */}
         <div className="button-horizontal">
           <button onClick={handleLogin}>ログイン</button>
           <button onClick={async (e) => {
@@ -75,6 +88,7 @@ const Login = () => {
         </div>
       </form>
 
+      {/* --- パスワードリセットリンク --- */}
       <div className='password-reset-link'>
         <div onClick={() => {
             const resetEmail = prompt("パスワードをリセットしたいメールアドレスを入力して下さい。");
@@ -91,6 +105,7 @@ const Login = () => {
                 });
         }}><AiOutlineQuestionCircle />パスワードを忘れた方へ</div>
       </div>
+      
     </div>
   );
 };

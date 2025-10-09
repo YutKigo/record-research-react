@@ -159,3 +159,37 @@
   margin-bottom: 16px !important; /* 他のpタグのスタイルを上書き */
   box-sizing: border-box;
 }
+
+/* パスワード入力欄とアイコンのコンテナ */
+.password-input-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* コンテナ内のinputタグに適用（アイコンと文字が重ならないように右側に余白を設ける）*/
+.password-input-container input {
+  padding-right: 40px; /* アイコンのスペースを確保 */
+  width: 100%; /* コンテナいっぱいに広げる */
+}
+
+/* アイコンのスタイル */
+.password-toggle-icon {
+  position: absolute;
+  right: 10px; /* 右端からの距離 */
+  cursor: pointer; /* カーソルをポインターに変更 */
+  color: #555; /* アイコンの色 */
+  font-size: 1.2rem; /* アイコンのサイズ */
+  display: flex; /* アイコンを中央揃えにするため */
+  align-items: center; /* アイコンを中央揃えにするため */
+  height: 100%; /* 高さを親要素に合わせる */
+}
+
+.password-toggle-icon:hover {
+  color: #000; /* ホバー時の色 */
+}
+
+.password-toggle-icon:active {
+  transform: scale(0.8); /* クリック時に少し縮小 */
+}

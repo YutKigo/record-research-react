@@ -6,3 +6,72 @@
     background-color: rgb(248, 248, 248);
     border: none;
 }
+
+/* =================================== */
+/* リアクションボタン (Slack風スタイル) */
+/* =================================== */
+
+/* --- 1. 通常時のスタイル (白背景・黒枠線) --- */
+.procedure-reactions-container-inline {
+    display: flex;         /* ★ 新規: 子要素を横並びにする */
+    align-items: center;   /* 子要素を垂直方向の中央に揃える */
+    gap: 10px;             /* 要素間のスペースを10pxに設定 */
+    margin-left: 10px;     /* タグとの間に少し余白 */
+}
+.reaction-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    /* デザイン要件 */
+    background-color: #ffffff; /* 背景を白に */
+    border: 1px solid #555;   /* 枠線を黒に近いグレーに */
+    color: #333;              /* アイコンと文字の色を濃いグレーに */
+    font-size: 13px !important;
+
+    /* 形状と余白 */
+    border-radius: 20px; /* 角を丸くしてカプセル状に */
+    padding: 4px 10px;
+    
+    /* その他 */
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s ease, color 0.2s ease; /* スムーズな変化 */
+}
+
+/* 通常時のホバー効果 */
+.reaction-btn:hover {
+    background-color: #f0f0f0; /* 少しグレーにする */
+}
+
+/* 通常時のactive効果 */
+.reaction-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- 2. リアクション済みのスタイル (.selected) --- */
+.reaction-btn.selected {
+    /* デザイン要件 */
+    background-color: #e0f0ff; /* 背景を薄い青に */
+    border-color: #1a73e8;       /* 枠線を濃い青に */
+    color: #1a73e8;              /* アイコンと文字の色を濃い青に */
+}
+
+/* カウント文字の色も連動させる */
+.reaction-btn.selected .reaction-count {
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+/* リアクション済みボタンのホバー効果 */
+.reaction-btn.selected:hover {
+    background-color: #d0e8ff; /* 少し濃い青にする */
+}
+
+/* カウントの基本スタイル */
+.reaction-count {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555; /* 通常時の文字色 */
+}
+
