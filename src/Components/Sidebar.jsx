@@ -51,8 +51,8 @@ function Sidebar({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, s
             authorName: currentUser.displayName,
             authorEmail: currentUser.email,
             isPublic: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
     }
 

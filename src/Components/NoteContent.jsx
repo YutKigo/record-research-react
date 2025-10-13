@@ -647,15 +647,15 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         if (!selectedNote) return;
         await addDoc(collection(db, "note", selectedNote.id, "task"), {
             taskName: taskName,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
     }
     async function updateTaskName(taskId, newName) {
         const docRef = doc(db, "note", selectedNote.id, "task", taskId);
         await updateDoc(docRef, {
             taskName: newName,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
         setEditingTaskId(null); 
     }
@@ -679,14 +679,14 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         const docRef = doc(db, "note", selectedNote.id, "task", selectedTask.id, "procedure", procedure.id);
         await updateDoc(docRef, {
             procedureName : newName,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
     }
     async function updateProcedureDescription(procedure, newDescription) {
         const docRef = doc(db, "note", selectedNote.id, "task", selectedTask.id, "procedure", procedure.id);
         await updateDoc(docRef, {
             procedureDescription: newDescription,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
         setEditingProcedureId(null);
     }
@@ -701,9 +701,14 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         }
         const procedureCollectionRef = collection(db, "note", selectedNote.id, "task", selectedTask.id, "procedure");
         const newProcedureData = {
-            procedureName: procedureName, procedureType: procedureType, procedureDescription: "",
-            code: "", command: "", filePath: "",
-            createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+            procedureName: procedureName, 
+            procedureType: procedureType, 
+            procedureDescription: "",
+            code: "", 
+            command: "", 
+            filePath: "",
+            createdAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }), 
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
         };
         try {
             await addDoc(procedureCollectionRef, newProcedureData);
@@ -720,7 +725,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
         try {
             await updateDoc(docRef, {
                 isPublic: isPublic,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
             });
             setSelectedNote({ ...note, isPublic: isPublic });
         } catch (error) {

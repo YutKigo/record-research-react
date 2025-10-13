@@ -72,8 +72,8 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
         // ★★★ パス変更 ★★★
         await addDoc(collection(db, "note", noteId, "task", taskId, "procedure", procedureId, "tag"), {
             tagName: newTagName,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
+            updatedAt: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
         });
 
         // (note本体のtags配列への追加は変更なし)
@@ -144,17 +144,17 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
                         {!isGlobal ? (<>
                             <button onClick={() => deleteTag(tag.id, tag.tagName)} className='delete-tag' title='タグを削除'>#</button>
                             <u className='procedure-tag-name' onClick={() => {
-                                scrollToTop();
-                                const searchInput = document.querySelector('.search-note-input');
-                                searchInput.value = tag.tagName;
-                                setSearchTerm(tag.tagName);
+                                // scrollToTop();
+                                // const searchInput = document.querySelector('.search-note-input');
+                                // searchInput.value = tag.tagName;
+                                // setSearchTerm(tag.tagName);
                             }} >{tag.tagName}</u>
                         </>) : (<>
                             #<u className='procedure-tag-name' onClick={() => { // グローバルでも検索はできるように修正
-                                scrollToTop();
-                                const searchInput = document.querySelector('.search-note-input');
-                                searchInput.value = tag.tagName;
-                                setSearchTerm(tag.tagName);
+                                // scrollToTop();
+                                // const searchInput = document.querySelector('.search-note-input');
+                                // searchInput.value = tag.tagName
+                                // setSearchTerm(tag.tagName);
                             }}>{tag.tagName}</u>
                         </>)}
                     </span>
