@@ -281,13 +281,13 @@ function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
                     className={`toggle-option ${activeView === 'edits' ? 'active' : ''}`}
                     onClick={() => setActiveView('edits')}
                 >
-                    差分表示
+                    要約表示
                 </button>
                 <button
                     className={`toggle-option ${activeView === 'fullcode' ? 'active' : ''}`}
                     onClick={() => setActiveView('fullcode')}
                 >
-                    全体表示
+                    差分表示
                 </button>
             </div>
 

@@ -14,58 +14,28 @@ import { AiOutlineGlobal } from "react-icons/ai"; // グローバルモードへ
 function SidebarGlobal({ notes, setNotes, selectedNote, setSelectedNote, searchTerm, setSearchTerm, isGlobal }) {
     const { currentUser } = useAuth(); // useAuthフックでユーザー情報を取得
 
-    // --- グローバルノートを取得する ---
+    // --- グローバルノートをすべて取得する ---
     useEffect(() => {
-    if (!currentUser) return; // 未ログイン時は何もしない
+        if (!currentUser) return; // 未ログイン時は何もしない
 
-    // 自分のユーザーID (uid) と一致する'authorId'を持つノートのみを取得
-    const q = query(
-        collection(db, "note"),
-        where("authorId", "!=", currentUser.uid),
-        where("isPublic", "==", true),
-        orderBy("createdAt", "desc")
-    );
-    const unsub = onSnapshot(q, (snapshot) => {
-        setNotes(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-    });
-
-    setSelectedNote(null);
-
-    return () => unsub();
-    }, [currentUser, isGlobal, setNotes, setSelectedNote]);
-
-    useEffect(() => {
-        let q;
-        const notesCollection = collection(db, "note");
-
-        // ★ 検索キーワードがある場合とない場合でクエリを分岐
-        if (searchTerm) {
-            searchTerm.split('');
-            // "tags"配列にsearchTermの文字列が含まれるドキュメントを検索
-            q = query(
-                notesCollection, 
-                where("authorId", "!=", currentUser.uid),
-                where("isPublic", "==", true),
-                where("tags", "array-contains", searchTerm), 
-                orderBy("updatedAt", "desc")
-            );
-        } else {
-            // 通常通り、ユーザノートを全件取得
-            q = query(
-                notesCollection, 
-                where("authorId", "!=", currentUser.uid),
-                where("isPublic", "==", true),
-                orderBy("updatedAt", "desc")
-            );
-        }
+        // 自分以外の公開ノートを更新順で取得するクエリ
+        const q = query(
+            collection(db, "note"),
+            where("authorId", "!=", currentUser.uid),
+            where("isPublic", "==", true),
+            orderBy("updatedAt", "desc") // updatedAtで並び替え
+        );
 
         const unsub = onSnapshot(q, (snapshot) => {
-            const fetchedNotes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setNotes(fetchedNotes);
+            const globalNotes = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            setNotes(globalNotes);
         });
 
+        setSelectedNote(null);
+
+        // クリーンアップ関数
         return () => unsub();
-    }, [searchTerm, currentUser.uid, setNotes]); // ★ searchTermが変わるたびにuseEffectが再実行される
+    }, [currentUser, isGlobal, setNotes, setSelectedNote]); // 依存配列を整理
 
     return (
         <div className="side-bar sidebar-global">
@@ -74,27 +44,41 @@ function SidebarGlobal({ notes, setNotes, selectedNote, setSelectedNote, searchT
           <AiOutlineGlobal className='mode-icon' />
           <h2>Global Notes</h2>
 
-          {/* --- タグ検索ボックス --- */}
-          <div className='search-note-byTag'>
-            <input type='search' placeholder='タグで検索' value={searchTerm} className='search-note-input' onChange={(event) => {
-                setSearchTerm(event.target.value);
-            }}/>
-          </div>
+          {/* --- ノート名検索ボックス --- */}
+            <div className='search-note-byTag'>
+                <input
+                    type='search'
+                    placeholder='ノート名で検索' // ★ placeholderを変更
+                    value={searchTerm}
+                    className='search-note-input'
+                    onChange={(event) => {
+                        setSearchTerm(event.target.value);
+                    }}
+                />
+            </div>
           
-          {/* --- ユーザノート一覧表示 --- */}
-          {notes.map((note) => {
-            // 現在のノートが選択中のノートかどうかを判定し, isSelectedならclassNameに'selected'を追加
-            const isSelected = selectedNote && selectedNote.id === note.id;
-            const buttonClassName = `button-note ${isSelected ? 'selected' : ''}`;
+          {/* --- グローバルノート一覧表示 (フィルタリング機能付き) --- */}
+            {notes
+                .filter((note) => { // ★ フィルタリング処理を追加
+                    // searchTermが空の場合は全てのノートを表示
+                    if (!searchTerm) {
+                        return true;
+                    }
+                    // ノート名にsearchTermの文字列が含まれているかチェック (大文字・小文字を区別しない)
+                    return note.noteName.toLowerCase().includes(searchTerm.toLowerCase());
+                })
+                .map((note) => {
+                    const isSelected = selectedNote && selectedNote.id === note.id;
+                    const buttonClassName = `button-note ${isSelected ? 'selected' : ''}`;
 
-            return (
-              <div key={note.id}>
-                <button onClick={() => setSelectedNote(note)} className={`${buttonClassName} sidebarGlobal-button-note-global`}>
-                  {note.noteName}
-                </button>
-              </div>
-            );
-          })}
+                    return (
+                        <div key={note.id}>
+                            <button onClick={() => setSelectedNote(note)} className={`${buttonClassName} sidebarGlobal-button-note-global`}>
+                                {note.noteName}
+                            </button>
+                        </div>
+                    );
+            })}
 
           <hr style={{marginTop: '4rem'}}/>
         </div>
