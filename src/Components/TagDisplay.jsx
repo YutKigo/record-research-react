@@ -174,19 +174,19 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
                 <p>→</p>
                 <div className="procedure-reactions-container-inline">
                     <button 
-                        title='共感'
+                        title='共感します!'
                         className={`reaction-btn ${userReactions.agree ? 'selected' : ''}`}
                         onClick={() => handleReaction('agree')}
                     >
-                        <FaThumbsUp /> 共感する！
+                        <FaThumbsUp /> 共感します！
                         <span className="reaction-count">{procedure.reactionCounts?.agree || 0}</span>
                     </button>
                     <button
-                        title='参考になった'
+                        title='参考になる！'
                         className={`reaction-btn ${userReactions.helpful ? 'selected' : ''}`}
                         onClick={() => handleReaction('helpful')}
                     >
-                        <FaLightbulb /> 参考になった！
+                        <FaLightbulb /> 参考になる!
                         <span className="reaction-count">{procedure.reactionCounts?.helpful || 0}</span>
                     </button>
                 </div>
