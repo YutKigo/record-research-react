@@ -282,8 +282,8 @@ import '../css/GlobalMode.css';
 import Modal from 'react-modal';
 
 // Firebase使用のimport
-import { db, auth } from '../firebase';
-import { collection, onSnapshot, orderBy, query, doc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '../firebase';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
 // マークダウン記法使用のためのreact-markdown と remark-gfm をインポート
 import ReactMarkdown from 'react-markdown';
@@ -298,13 +298,13 @@ import ProceudureCommandExecution from './ProcedureCommandExecution';
 
 // react-iconsのimport
 import { MdOutlineDescription } from "react-icons/md";
-import { BsArrowsCollapse } from "react-icons/bs";
-import { BsArrowsExpand } from "react-icons/bs";
+//import { BsArrowsCollapse } from "react-icons/bs";
+//import { BsArrowsExpand } from "react-icons/bs";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { DiCodeBadge } from "react-icons/di";
 import { RxInfoCircled } from "react-icons/rx";
-import { FaHeartCircleCheck } from "react-icons/fa6";
-import { FaThumbsUp, FaLightbulb } from "react-icons/fa"; // リアクション用アイコン
+//import { FaHeartCircleCheck } from "react-icons/fa6";
+//import { FaThumbsUp, FaLightbulb } from "react-icons/fa"; // リアクション用アイコン
 
 // Modalのルート要素を設定
 Modal.setAppElement('#root');
@@ -315,12 +315,12 @@ function NoteContentGlobal({ selectedNote, searchTerm, setSearchTerm }) {
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null); 
     const [procedures, setProcedures] = useState([]); 
-    const [tagsArray, setTagsArray] = useState([]); 
-    const [allOpen, setAllOpen] = useState(false); 
+    const [, setTagsArray] = useState([]); 
+    const [, setAllOpen] = useState(false); 
     const [isSnippetModal, setIsSnippetModal] = useState(false); 
     const [isInfoMenuOpen, setIsInfoMenuOpen] = useState(false);
-    const [reactionUpdate, setReactionUpdate] = useState(0); // リアクション更新用のState（UI再描画用）
-    
+    //const [, setReactionUpdate] = useState(0); // リアクション更新用のState（UI再描画用）
+
     // --- Effect 1: ノート選択時 (タスク取得) ---
     useEffect(() => {
         if (!selectedNote) {
@@ -385,46 +385,46 @@ function NoteContentGlobal({ selectedNote, searchTerm, setSearchTerm }) {
     }, [selectedTask, selectedNote]); // ★ 依存配列のバグ修正
 
     // ★★★ リアクション処理関数を新規追加 ★★★
-    async function handleReaction(procedure, reactionType) {
-        // ログインしていない場合は処理を中断
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            alert("リアクションをするにはログインが必要です。");
-            return;
-        }
+    // async function handleReaction(procedure, reactionType) {
+    //     // ログインしていない場合は処理を中断
+    //     const currentUser = auth.currentUser;
+    //     if (!currentUser) {
+    //         alert("リアクションをするにはログインが必要です。");
+    //         return;
+    //     }
 
-        // 1. リアクション対象のprocedureドキュメントへの参照を取得
-        const procedureRef = doc(db, "note", selectedNote.id, "task", selectedTask.id, "procedure", procedure.id);
+    //     // 1. リアクション対象のprocedureドキュメントへの参照を取得
+    //     const procedureRef = doc(db, "note", selectedNote.id, "task", selectedTask.id, "procedure", procedure.id);
 
-        // 2. localStorageに保存するキーを定義 (例: "reaction_procedure123_agree")
-        const localStorageKey = `reaction_${procedure.id}_${reactionType}`;
-        const hasReacted = localStorage.getItem(localStorageKey) === 'true';
+    //     // 2. localStorageに保存するキーを定義 (例: "reaction_procedure123_agree")
+    //     const localStorageKey = `reaction_${procedure.id}_${reactionType}`;
+    //     const hasReacted = localStorage.getItem(localStorageKey) === 'true';
 
-        // 3. 更新するフィールド名と増減値を決定
-        const fieldToUpdate = reactionType === 'agree' ? 'agreeReaction' : 'helpfulReaction';
-        const valueToIncrement = hasReacted ? -1 : 1; // 既にリアクション済みなら-1、そうでなければ+1
+    //     // 3. 更新するフィールド名と増減値を決定
+    //     const fieldToUpdate = reactionType === 'agree' ? 'agreeReaction' : 'helpfulReaction';
+    //     const valueToIncrement = hasReacted ? -1 : 1; // 既にリアクション済みなら-1、そうでなければ+1
 
-        // 4. Firestoreの値を更新
-        try {
-            await updateDoc(procedureRef, {
-                [fieldToUpdate]: increment(valueToIncrement)
-            });
+    //     // 4. Firestoreの値を更新
+    //     try {
+    //         await updateDoc(procedureRef, {
+    //             [fieldToUpdate]: increment(valueToIncrement)
+    //         });
 
-            // 5. localStorageの状態を更新
-            if (hasReacted) {
-                localStorage.removeItem(localStorageKey);
-            } else {
-                localStorage.setItem(localStorageKey, 'true');
-            }
+    //         // 5. localStorageの状態を更新
+    //         if (hasReacted) {
+    //             localStorage.removeItem(localStorageKey);
+    //         } else {
+    //             localStorage.setItem(localStorageKey, 'true');
+    //         }
 
-            // 6. UIを再描画するためにStateを更新
-            setReactionUpdate(prev => prev + 1);
+    //         // 6. UIを再描画するためにStateを更新
+    //         setReactionUpdate(prev => prev + 1);
 
-        } catch (error) {
-            console.error("リアクションの更新に失敗しました:", error);
-            alert("リアクションに失敗しました。");
-        }
-    }
+    //     } catch (error) {
+    //         console.error("リアクションの更新に失敗しました:", error);
+    //         alert("リアクションに失敗しました。");
+    //     }
+    // }
 
 
     return (

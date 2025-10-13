@@ -6,7 +6,7 @@ import { collection, onSnapshot, query, addDoc, orderBy, doc, deleteDoc, updateD
 
 // react-iconのimport
 import { MdAdd } from "react-icons/md"; // タグ追加ボタン
-import { BsTags } from "react-icons/bs"; // タグ表示開始アイコン
+//import { BsTags } from "react-icons/bs"; // タグ表示開始アイコン
 import { FaHeartCircleCheck } from "react-icons/fa6"; // 感情verアイコン
 import { FaThumbsUp, FaLightbulb } from "react-icons/fa";
 
@@ -17,12 +17,12 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
     const [userReactions, setUserReactions] = useState({ agree: false, helpful: false });
 
     // ページトップにスムーズにスクロールする関数
-    const scrollToTop = () => {
-        window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-        });
-    };
+    // const scrollToTop = () => {
+    //     window.scrollTo({
+    //     top: 0,
+    //     behavior: 'smooth'
+    //     });
+    // };
 
     useEffect(() => {
         // procedureオブジェクトがなければ何もしない (より安全なチェック)

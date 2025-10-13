@@ -551,7 +551,7 @@ import { BsArrowsExpand } from "react-icons/bs";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { DiCodeBadge } from "react-icons/di";
 import { RxInfoCircled } from "react-icons/rx";
-import { FaHeartCircleCheck } from "react-icons/fa6";
+//import { FaHeartCircleCheck } from "react-icons/fa6";
 
 // Modalのルート要素を設定 (Appのルートに合わせる)
 Modal.setAppElement('#root');
@@ -563,7 +563,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
     const [selectedTask, setSelectedTask] = useState(null); 
 
     const [procedures, setProcedures] = useState([]); 
-    const [tagsArray, setTagsArray] = useState([]); 
+    const [, setTagsArray] = useState([]); 
     
     const [allOpen, setAllOpen] = useState(false);
     const [isSnippetModal, setIsSnippetModal] = useState(false);
