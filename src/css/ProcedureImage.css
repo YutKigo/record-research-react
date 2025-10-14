@@ -1,0 +1,99 @@
+/* --- ProcedureImage コンポーネントのスタイル --- */
+.procedure-image-container {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: var(--vscode-editor-background, rgb(248, 248, 248));;
+  /* ↓↓↓↓ 中央揃えのために追加 ↓↓↓↓ */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.procedure-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.image-upload-input-wrapper {
+  margin-top: 10px;
+}
+
+.image-upload-label {
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.image-upload-label:hover {
+  background-color: #0056b3;
+}
+
+/* ドラッグオーバー時のスタイル */
+.procedure-image-container.drag-over {
+  border: 2px dashed #3498db;
+  background-color: #3a3a3a;
+}
+
+
+/* 画像と削除ボタンをまとめるラッパー */
+.image-wrapper {
+  position: relative; /* 子要素の絶対配置の基準にする */
+  max-width: 100%;
+}
+
+/* 削除ボタンのスタイル */
+.image-delete-button {
+  position: absolute; /* 親要素(.image-wrapper)を基準に配置 */
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  opacity: 0; /* 最初は非表示 */
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* 画像ラッパーにホバーしたときに削除ボタンを表示 */
+.image-wrapper:hover .image-delete-button {
+  opacity: 1;
+}
+
+.image-delete-button:hover {
+  background-color: rgba(255, 0, 0, 0.7);
+}
+
+
+/* ↓↓↓↓ ローディングスピナー（くるくる）のスタイルを追加 ↓↓↓↓ */
+.loader {
+  border: 4px solid #f3f3f3; /* スピナーの薄い円 */
+  border-top: 4px solid #3498db; /* 回転する部分の色 */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite; /* spinアニメーションを1秒で無限ループ */
+  margin: 20px 0; /* 上下の余白 */
+}
+
+/* 回転アニメーションの定義 */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
