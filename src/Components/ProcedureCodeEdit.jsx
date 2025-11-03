@@ -1,4 +1,3 @@
-// src/components/ProcedureCodeEdit.jsx
 import React, { useState, useEffect } from 'react';
 import '../css/ProcedureCodeEdit.css';
 
@@ -20,25 +19,41 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
 
     const [codeEdits, setCodeEdits] = useState([]);
+    const [fullcodeDiffs, setFullcodeDiffs] = useState([]); 
     const [activeView, setActiveView] = useState('edits'); // 'edits' または 'fullcode'
 
+    // useEffectでfullcodeDiffsも取得
     useEffect(() => {
         // ★ taskIdがない場合は実行しない
         if (!selectedNote || !taskId || !procedure) return;
 
-        // ★★★ パス変更: "note/{noteId}/task/{taskId}/procedure/{procedureId}/codeEdit" ★★★
-        const q = query(
+        // 1. "codeEdit" (要約表示用) の取得 (変更なし)
+        const qCodeEdits = query(
             collection(db, "note", selectedNote.id, "task", taskId, "procedure", procedure.id, "codeEdit"), 
             orderBy("createdAt", "desc")
         );
-        const unsub = onSnapshot(q, (snapshot) => {
+        const unsubCodeEdits = onSnapshot(qCodeEdits, (snapshot) => {
             setCodeEdits(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         });
 
-        return () => unsub();
-    }, [selectedNote, taskId, procedure]); // ★ 監視対象に taskId, procedure を追加
+        // 2. "fullcodeDiffs" (差分表示用) の取得 (★ 新しく追加)
+        const qFullcodeDiffs = query(
+            collection(db, "note", selectedNote.id, "task", taskId, "procedure", procedure.id, "fullcodeDiffs"),
+            orderBy("createdAt", "asc") // 差分は時系列順（またはファイルパス順）が良いかもしれません
+        );
+        const unsubFullcodeDiffs = onSnapshot(qFullcodeDiffs, (snapshot) => {
+            setFullcodeDiffs(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        });
 
-    // fsPathをファイルパスと関数シンボルに分割して表示するコンポーネント
+
+        // unsub（購読解除）を両方返す
+        return () => {
+            unsubCodeEdits();
+            unsubFullcodeDiffs();
+        };
+    }, [selectedNote, taskId, procedure]); 
+
+    // fsPathをファイルパスと関数シンボルに分割して表示するコンポーネント (変更なし)
     const FilePath = ({ path }) => {
         if (!path) return null;
 
@@ -77,18 +92,19 @@ function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
         );
     };
 
-    // fullcode表示用の行スタイル関数
-    const lineProps = (lineNumber) => {
-        // procedure.fullcode が存在するかチェック
-        const fullcodeText = procedure.fullcode || "";
+    // linePropsをファクトリ関数（`diff`テキストを引数に取る）に変更
+    const createLineProps = (diffContent) => (lineNumber) => {
+        // procedure.fullcode の代わりに引数の diffContent を使用
+        const fullcodeText = diffContent || "";
         const line = (fullcodeText.split('\n')[lineNumber - 1] || '').trim();
         const style = { display: 'block' };
         
+        // `formatCustomDiff` で整形済みの前提（+,-, ' ' のみ）
+        // ` ` で始まるコンテキスト行（変更なしの行）を薄く表示
         if (!line.startsWith('+') && !line.startsWith('-')) {
             style.opacity = 0.3;
         }
 
-        // diffスタイルはインラインスタイルでは上書きされにくいため、!importantは削除（CSS側で制御推奨）
         if (line.startsWith('-')) {
             style.color = 'red'; 
         }
@@ -98,7 +114,7 @@ function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
 
     return (
         <div className="procedure-code-edit-wrapper">
-            {/* --- コード表示（差分 / 全体）切り替えトグル --- */}
+            {/* --- コード表示（差分 / 全体）切り替えトグル --- (変更なし) */}
             <div className="view-toggle-switch">
                 <div className={`glider ${activeView === 'fullcode' ? 'slide' : ''}`}></div>
                 <button
@@ -119,14 +135,14 @@ function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
             {/* --- コンテンツ表示エリア --- */}
             <div className="view-content">
                 {activeView === 'edits' ? (
-                    // 差分表示 (codeEditの一覧)
+                    // 要約表示 (codeEditの一覧) (変更なし)
                     <>
                         {codeEdits.map((codeEdit) => (
                             <div className="codeEdit-container" key={codeEdit.id}>
                                 {codeEdit.type === "added" ? (
                                     <SyntaxHighlighter
                                         className="codeEdit-code codeEdit-code-added"
-                                        language={codeEdit.language || "javascript"} // 言語指定を動的に
+                                        language={codeEdit.language || "javascript"} 
                                         style={vscDarkPlus}
                                         id={codeEdit.id}>
                                         {codeEdit.code}
@@ -159,21 +175,29 @@ function ProcedureCodeEdit({ selectedNote, taskId, procedure }) {
                         ))}
                     </>
                 ) : (
-                    // 全体表示 (fullcode)
-                    <>                  
+                    // 差分表示 (fullcodeDiffsの一覧)
                     <div className='fullcode-container'>
-                        <SyntaxHighlighter
-                            className="fullcode-code"
-                            language='diff' // 全体表示は'diff'としてハイライトする
-                            showLineNumbers
-                            style={vscDarkPlus}
-                            lineProps={lineProps}
-                            wrapLines={true}
-                        >
-                            {procedure.fullcode || ""}
-                        </SyntaxHighlighter>
+                        {/* fullcodeDiffs配列をマップし、ファイルごとに差分ブロックを表示 */}
+                        {fullcodeDiffs.map((diffDoc) => (
+                            <div key={diffDoc.id} className="file-diff-block">
+                                {/* ファイルパスのヘッダーを追加 */}
+                                <p className="file-diff-path">
+                                    <FaFileAlt /> {diffDoc.filePath}
+                                </p>
+                                <SyntaxHighlighter
+                                    className="fullcode-code"
+                                    language='diff' // 全体表示は'diff'としてハイライトする
+                                    showLineNumbers
+                                    style={vscDarkPlus}
+                                    // ファクトリ関数に「このファイルのdiffテキスト」を渡す
+                                    lineProps={createLineProps(diffDoc.diff)}
+                                    wrapLines={true}
+                                >
+                                    {diffDoc.diff || ""}
+                                </SyntaxHighlighter>
+                            </div>
+                        ))}
                     </div>
-                    </>
                 )}
             </div>
         </div>
