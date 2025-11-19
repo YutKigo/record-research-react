@@ -13,7 +13,13 @@ import { FaThumbsUp, FaLightbulb } from "react-icons/fa";
 
 // ★ Propsに taskId, isGlobal を追加
 function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, setSearchTerm, isGlobal }) {
+    // 感情タグ配列の状態
     const [tags, setTags] = useState([]);
+
+    // 学び・疑問点配列の状態
+    const [points, setPoints] = useState([]);
+
+    // 読者のリアクション状態
     const [userReactions, setUserReactions] = useState({ agree: false, helpful: false });
 
     // ページトップにスムーズにスクロールする関数
@@ -32,11 +38,18 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
             return;
         };
 
-        // --- タグ情報の取得 ---
+        // --- 感情タグ情報の取得 ---
         const tagsCollectionRef = collection(db, "note", noteId, "task", taskId, "procedure", procedure.id, "tag");
         const q = query(tagsCollectionRef, orderBy("createdAt", "asc"));
         const unsubTags = onSnapshot(q, (snapshot) => {
             setTags(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        });
+
+        // --- 学び・疑問点情報の取得 ---
+        const pointsCollectionRef = collection(db, "note", noteId, "task", taskId, "procedure", procedure.id, "points");
+        const qPoints = query(pointsCollectionRef, orderBy("createdAt", "asc"));
+        const unsubPoints = onSnapshot(qPoints, (snapshot) => {
+            setPoints(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
 
         // --- ユーザーのリアクション状態を取得 ---
@@ -60,10 +73,10 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
         // --- クリーンアップ関数 ---
         return () => {
             unsubTags();
+            unsubPoints();
             unsubAgree();
             unsubHelpful();
         };
-    // ★ 修正: 依存配列に `procedure` と `isGlobal` を追加
     }, [noteId, taskId, procedure, isGlobal]);
 
     
@@ -213,6 +226,20 @@ function TagDisplay({note, noteId, taskId, procedure, procedureId, searchTerm, s
             </>) : (<>
 
             </>)}
+
+            {/* ★ 3. --- 学び・疑問点 (points) の表示 --- */}
+            {points.length > 0 && (
+                <div className="points-container">
+                    {(isGlobal ? <h4 className="points-title">著者の学び・疑問点</h4> : <h4 className="points-title">学び・疑問点</h4>)}
+                    <ul className="points-list">
+                        {points.map(point => (
+                            <li key={point.id} className="point-item">
+                                {point.pointText}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 }

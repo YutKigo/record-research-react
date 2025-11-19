@@ -41,9 +41,11 @@ Modal.setAppElement('#root');
 function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm }) {
 
     // --- State定義 ---
+    // タスク
     const [tasks, setTasks] = useState([]); 
     const [selectedTask, setSelectedTask] = useState(null); 
 
+    // 手順
     const [procedures, setProcedures] = useState([]); 
     const [, setTagsArray] = useState([]); 
     
@@ -367,6 +369,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                                 </summary>
                                 
                                                 <div className='procedure-content-wrapper'>
+                                                    {/* --- 感情表示 --- */}
                                                     <div>
                                                         <TagDisplay 
                                                             note={selectedNote}
@@ -379,7 +382,8 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                                         />
                                                     </div>
 
-                                                    { 
+                                                    {/* --- 手順タイプによる表示分岐 --- */}
+                                                    {   
                                                         procedure.procedureType === "コード編集" ? (
                                                             <ProcedureCodeEdit 
                                                                 selectedNote={selectedNote} 
@@ -393,6 +397,7 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                                         null
                                                     }
 
+                                                    {/* --- 手順説明表示 --- */}
                                                     <div className='procedure-description'>
                                                         {editingProcedureId === procedure.id ? (
                                                             <div className='description-editor'>
@@ -435,6 +440,8 @@ function NoteContent({ selectedNote, setSelectedNote, searchTerm, setSearchTerm 
                                                             </>
                                                         )}
                                                     </div>
+
+
                                                 </div>
                                             </details>
                                         </div>

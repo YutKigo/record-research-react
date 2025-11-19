@@ -256,15 +256,18 @@ function NoteContentGlobal({ selectedNote, searchTerm, setSearchTerm }) {
                                                         procedure.procedureType === "画像" ? (<ProcedureImageGlobal procedure={procedure} />) :
                                                         null
                                                     }
-                                                    {/* 手順の説明 (閲覧専用) */}
-                                                    <div className='procedure-description'>
-                                                        <MdOutlineDescription title='説明' className='description-icon'/>
-                                                        <div className='procedure-description-text'>
-                                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                                                {procedure.procedureDescription || '*説明がありません*'}
-                                                            </ReactMarkdown>
+                                                    
+                                                    {/* 手順の説明があるなら表示 (閲覧専用) */}
+                                                    {procedure.procedureDescription && procedure.procedureDescription !== "" && (
+                                                        <div className='procedure-description'>
+                                                            <MdOutlineDescription title='説明' className='description-icon'/>
+                                                            <div className='procedure-description-text'>
+                                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                                    {procedure.procedureDescription || '*説明がありません*'}
+                                                                </ReactMarkdown>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             </details>
                                         </div>
